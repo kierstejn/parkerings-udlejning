@@ -12,7 +12,7 @@ class UserAuthController extends Controller
     {
         $loginUserData = $request->validate([
             'email'=>'required|string|email',
-            'password'=>'required|min:8'
+            'password'=>'required|min:4'
         ]);
 
         $user = User::where('email',$loginUserData['email'])->first();

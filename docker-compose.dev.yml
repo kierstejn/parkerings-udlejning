@@ -9,8 +9,20 @@ services:
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: dev_db
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
     container_name: db
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./:/var/www
+      - ./docker/development/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - ./docker/development/nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - server
   server:
     build:
       context: .
@@ -29,7 +41,6 @@ services:
       - .:/var/www
     working_dir: /var/www
     command: >
-      sh -c "composer install &&
-             php artisan serve --host=0.0.0.0 --port=8000"
+      sh -c "composer install && php-fpm -F"
 volumes:
   pgdata:

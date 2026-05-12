@@ -27,6 +27,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: app
+      args:
+        COMPOSER_FLAGS: ""
     develop:
       watch:
         - action: sync
@@ -41,8 +44,7 @@ services:
       - .:/var/www
       - ./docker/development/php/opcache.ini:/usr/local/etc/php/conf.d/opcache-disable.ini:ro
     working_dir: /var/www
-    command: >
-      sh -c "composer install && php-fpm -F"
+    entrypoint: sh -c "composer install && php-fpm -F"
   web:
     image: node:20-alpine
     container_name: web

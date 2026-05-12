@@ -1,0 +1,31 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+      args:
+        COMPOSER_FLAGS: "--no-dev"
+    restart: unless-stopped
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL}
+      APP_DEBUG: ${APP_DEBUG}
+      DB_CONNECTION: pgsql
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"

@@ -14,7 +14,7 @@ export default function HeaderAuth() {
                     href="/profil"
                     className="text-sm font-medium text-[oklch(0.50_0.025_255)] hover:text-[oklch(0.18_0.03_255)] transition-colors"
                 >
-                    Min
+                    Min side
                 </Link>
                 <button
                     onClick={handleLogout}

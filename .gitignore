@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/docker/development/nginx/certs/*.crt
+/docker/development/nginx/certs/*.key
+/docker/development/php/opcache.ini

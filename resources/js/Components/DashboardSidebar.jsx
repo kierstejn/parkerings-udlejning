@@ -37,7 +37,7 @@ export default function DashboardSidebar() {
                         </div>
                         <SideLink
                             href="/udlejer/parkeringspladser"
-                            active={pathname.startsWith('/udlejer/parkeringspladser')}
+                            active={pathname === '/udlejer/parkeringspladser'}
                             icon={<Car className="w-3.5 h-3.5" strokeWidth={1.5} />}
                         >
                             Parkeringspladser

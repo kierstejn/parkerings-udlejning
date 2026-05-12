@@ -9,11 +9,11 @@ class DashboardController extends Controller
 {
     public function profil()
     {
-        return Inertia::render('profil');
+        return Inertia::render('Dashboard/Profil');
     }
 
     public function bookinger()
     {
-        return Inertia::render('bookinger');
+        return Inertia::render('Dashboard/Bookinger');
     }
 }

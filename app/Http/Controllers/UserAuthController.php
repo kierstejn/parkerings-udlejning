@@ -31,9 +31,34 @@ class UserAuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'expires_in' => config('sanctum.expiration') * 60, // Convert minutes to seconds
+            'expires_in' => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : 86400,
             'user' => $user
         ])->cookie($this->getRefreshCookie($refreshToken));
+    }
+
+    public function register(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        $token = $user->createToken('access_token')->plainTextToken;
+        $refreshToken = $user->createToken('refresh_token', ['*'], now()->addDays(7))->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type'   => 'Bearer',
+            'expires_in'   => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : 86400,
+            'user'         => $user,
+        ], 201)->cookie($this->getRefreshCookie($refreshToken));
     }
 
     public function refresh(Request $request)
@@ -105,6 +130,15 @@ class UserAuthController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function verifyUdlejer(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $user = $request->user();
+        $user->udlejer_verified = true;
+        $user->save();
+
+        return response()->json($user);
     }
 
     protected function getRefreshCookie($token, $clear = false)

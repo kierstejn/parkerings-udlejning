@@ -39,6 +39,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/var/www
+      - ./docker/development/php/opcache.ini:/usr/local/etc/php/conf.d/opcache-disable.ini:ro
     working_dir: /var/www
     command: >
       sh -c "composer install && php-fpm -F"

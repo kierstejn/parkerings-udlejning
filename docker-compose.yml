@@ -27,5 +27,3 @@ services:
     restart: unless-stopped
     depends_on:
       - app
-    ports:
-      - "80:80"

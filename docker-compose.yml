@@ -7,6 +7,8 @@ services:
       args:
         COMPOSER_FLAGS: "--no-dev"
     restart: unless-stopped
+    networks:
+      - dokploy-network
     environment:
       APP_ENV: ${APP_ENV}
       APP_KEY: ${APP_KEY}
@@ -25,5 +27,11 @@ services:
       dockerfile: Dockerfile
       target: web
     restart: unless-stopped
+    networks:
+      - dokploy-network
     depends_on:
       - app
+
+networks:
+  dokploy-network:
+    external: true

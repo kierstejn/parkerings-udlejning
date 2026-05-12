@@ -25,6 +25,7 @@ RUN composer install ${COMPOSER_FLAGS} --optimize-autoloader --no-scripts --no-i
 COPY . .
 COPY --from=frontend /app/public/build ./public/build
 COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 COPY docker/php/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache

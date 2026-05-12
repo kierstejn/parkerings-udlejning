@@ -1,31 +1,33 @@
 import { Link, usePage } from '@inertiajs/react';
 import { User, Calendar, ShieldCheck, Car } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function DashboardSidebar() {
     const { auth, url } = usePage().props;
-    const verified = auth.user?.udlejer_verified === true;
+    const { t } = useLanguage();
+    const verified = auth.user?.landlord_verified === true;
     const pathname = url;
 
     return (
         <aside className="w-56 shrink-0 border-r border-[oklch(0.88_0.015_85)] py-10 px-5 flex flex-col gap-8">
-            <SideSection label="Lejer">
+            <SideSection label={t('sidebar.tenant')}>
                 <SideLink
-                    href="/profil"
-                    active={pathname === '/profil'}
+                    href="/profile"
+                    active={pathname === '/profile'}
                     icon={<User className="w-3.5 h-3.5" strokeWidth={1.5} />}
                 >
-                    Profil
+                    {t('sidebar.profile')}
                 </SideLink>
                 <SideLink
-                    href="/bookinger"
-                    active={pathname === '/bookinger'}
+                    href="/bookings"
+                    active={pathname === '/bookings'}
                     icon={<Calendar className="w-3.5 h-3.5" strokeWidth={1.5} />}
                 >
-                    Bookinger
+                    {t('sidebar.bookings')}
                 </SideLink>
             </SideSection>
 
-            <SideSection label="Udlejer">
+            <SideSection label={t('sidebar.landlord')}>
                 {verified ? (
                     <>
                         <div
@@ -33,23 +35,23 @@ export default function DashboardSidebar() {
                             style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}
                         >
                             <ShieldCheck className="w-3.5 h-3.5" strokeWidth={2} />
-                            MitID verificeret
+                            {t('sidebar.mitid_verified')}
                         </div>
                         <SideLink
-                            href="/udlejer/parkeringspladser"
-                            active={pathname === '/udlejer/parkeringspladser'}
+                            href="/landlord/parking-spots"
+                            active={pathname === '/landlord/parking-spots'}
                             icon={<Car className="w-3.5 h-3.5" strokeWidth={1.5} />}
                         >
-                            Parkeringspladser
+                            {t('sidebar.parking_spots')}
                         </SideLink>
                     </>
                 ) : (
                     <SideLink
-                        href="/udlejer"
-                        active={pathname === '/udlejer'}
+                        href="/landlord"
+                        active={pathname === '/landlord'}
                         icon={<ShieldCheck className="w-3.5 h-3.5" strokeWidth={1.5} />}
                     >
-                        Verificér med MitID
+                        {t('sidebar.verify_mitid')}
                     </SideLink>
                 )}
             </SideSection>

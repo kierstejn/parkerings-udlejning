@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'udlejer_verified',
+        'landlord_verified',
     ];
 
     /**
@@ -51,7 +51,7 @@ class User extends Authenticatable
         return [
             'email_verified_at'  => 'datetime',
             'password'           => 'hashed',
-            'udlejer_verified'   => 'boolean',
+            'landlord_verified'  => 'boolean',
         ];
     }
 }

@@ -16,7 +16,7 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('logout', [UserAuthController::class, 'logout']);
-        Route::post('verify-udlejer', [UserAuthController::class, 'verifyUdlejer']);
+        Route::post('verify-landlord', [UserAuthController::class, 'verifyLandlord']);
     });
 });
 

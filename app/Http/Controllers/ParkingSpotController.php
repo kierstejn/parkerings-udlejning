@@ -16,17 +16,17 @@ class ParkingSpotController extends Controller
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        if (!$request->user()->udlejer_verified) {
-            return response()->json(['message' => 'Du skal verificeres med MitID for at oprette parkeringspladser.'], 403);
+        if (!$request->user()->landlord_verified) {
+            return response()->json(['message' => 'You must be verified with MitID to create parking spots.'], 403);
         }
 
         $data = $request->validate([
             'title'       => 'required|string|max:255',
             'address'     => 'required|string|max:255',
-            'type'        => 'required|in:carport,garage,udendoers,indendoers',
-            'size'        => 'required|in:kompakt,standard,stor',
+            'type'        => 'required|in:carport,garage,outdoor,indoor',
+            'size'        => 'required|in:compact,standard,large',
             'price'       => 'required|numeric|min:0',
-            'price_unit'  => 'required|in:time,dag,md',
+            'price_unit'  => 'required|in:hour,day,month',
             'description' => 'nullable|string|max:2000',
         ]);
 

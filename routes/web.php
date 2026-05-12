@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
-use App\Http\Controllers\Web\UdlejerController;
+use App\Http\Controllers\Web\LandlordController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,14 +25,16 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 // ── Dashboard (authenticated) ─────────────────────────────
 Route::middleware('auth')->group(function () {
-    Route::get('/profil',    [DashboardController::class, 'profil'])->name('dashboard.profil');
-    Route::get('/bookinger', [DashboardController::class, 'bookinger'])->name('dashboard.bookinger');
+    Route::get('/profile',   [DashboardController::class, 'profile'])->name('dashboard.profile');
+    Route::get('/bookings',  [DashboardController::class, 'bookings'])->name('dashboard.bookings');
 
-    Route::get('/udlejer',         [UdlejerController::class, 'index'])->name('dashboard.udlejer');
-    Route::post('/udlejer/verify', [UdlejerController::class, 'verify'])->name('dashboard.udlejer.verify');
+    Route::get('/landlord',         [LandlordController::class, 'index'])->name('dashboard.landlord');
+    Route::post('/landlord/verify', [LandlordController::class, 'verify'])->name('dashboard.landlord.verify');
 
-    Route::middleware('udlejer')->group(function () {
-        Route::get('/udlejer/parkeringspladser',  [UdlejerController::class, 'parkeringspladser'])->name('dashboard.udlejer.parkeringspladser');
-        Route::post('/udlejer/parkeringspladser', [UdlejerController::class, 'storeParkeringsplads'])->name('dashboard.udlejer.parkeringspladser.store');
+    Route::middleware('landlord')->group(function () {
+        Route::get('/landlord/parking-spots',                        [LandlordController::class, 'parkingSpots'])->name('dashboard.landlord.parking-spots');
+        Route::post('/landlord/parking-spots',                       [LandlordController::class, 'storeParkingSpot'])->name('dashboard.landlord.parking-spots.store');
+        Route::post('/landlord/parking-spots/{spot}',                [LandlordController::class, 'updateParkingSpot'])->name('dashboard.landlord.parking-spots.update');
+        Route::delete('/landlord/parking-spots/images/{image}',      [LandlordController::class, 'destroyImage'])->name('dashboard.landlord.parking-spots.image.destroy');
     });
 });

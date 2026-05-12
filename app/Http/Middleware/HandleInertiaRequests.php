@@ -43,7 +43,7 @@ class HandleInertiaRequests extends Middleware
                     'name'             => $request->user()->name,
                     'email'            => $request->user()->email,
                     'created_at'       => $request->user()->created_at,
-                    'udlejer_verified' => $request->user()->udlejer_verified,
+                    'landlord_verified' => $request->user()->landlord_verified,
                 ] : null,
             ],
             'flash' => [

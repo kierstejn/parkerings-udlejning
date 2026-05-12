@@ -1,4 +1,6 @@
 import { Link, useForm } from '@inertiajs/react';
+import { useLanguage } from '../../contexts/LanguageContext';
+import LanguageSelector from '../../Components/LanguageSelector';
 
 export default function Register() {
     const { data, setData, post, processing, errors } = useForm({
@@ -7,6 +9,7 @@ export default function Register() {
         password: '',
         password_confirmation: '',
     });
+    const { t } = useLanguage();
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -15,7 +18,7 @@ export default function Register() {
 
     return (
         <div className="min-h-screen bg-[oklch(0.965_0.008_85)] flex flex-col" style={{ fontFamily: 'var(--font-body)' }}>
-            <header className="px-6 py-5 border-b border-[oklch(0.88_0.015_85)]">
+            <header className="px-6 py-5 border-b border-[oklch(0.88_0.015_85)] flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2.5 w-fit">
                     <div
                         className="w-8 h-8 bg-[oklch(0.22_0.04_255)] flex items-center justify-center text-[oklch(0.72_0.14_75)]"
@@ -30,6 +33,7 @@ export default function Register() {
                         ParkDel
                     </span>
                 </Link>
+                <LanguageSelector />
             </header>
 
             <main className="flex-1 flex items-center justify-center px-6 py-16">
@@ -38,20 +42,20 @@ export default function Register() {
                         className="text-[oklch(0.18_0.03_255)] mb-2 uppercase"
                         style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.02em' }}
                     >
-                        Opret konto
+                        {t('register.title')}
                     </h1>
                     <p className="text-[oklch(0.55_0.02_255)] text-sm mb-8">
-                        Gratis at oprette — ingen binding.
+                        {t('register.tagline')}
                     </p>
 
                     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-                        <Field label="Navn" htmlFor="name">
+                        <Field label={t('register.name')} htmlFor="name">
                             <input
                                 id="name"
                                 type="text"
                                 autoComplete="name"
                                 required
-                                placeholder="Dit fulde navn"
+                                placeholder={t('register.name_placeholder')}
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 className={inputCls}
@@ -65,7 +69,7 @@ export default function Register() {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                placeholder="din@email.dk"
+                                placeholder={t('register.email_placeholder')}
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 className={inputCls}
@@ -73,7 +77,7 @@ export default function Register() {
                             {errors.email && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.email}</p>}
                         </Field>
 
-                        <Field label="Adgangskode" htmlFor="password">
+                        <Field label={t('register.password')} htmlFor="password">
                             <input
                                 id="password"
                                 type="password"
@@ -87,7 +91,7 @@ export default function Register() {
                             {errors.password && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.password}</p>}
                         </Field>
 
-                        <Field label="Gentag adgangskode" htmlFor="password_confirmation">
+                        <Field label={t('register.confirm_password')} htmlFor="password_confirmation">
                             <input
                                 id="password_confirmation"
                                 type="password"
@@ -101,14 +105,14 @@ export default function Register() {
                         </Field>
 
                         <button type="submit" disabled={processing} className={submitCls}>
-                            {processing ? 'Opretter konto…' : 'Opret konto'}
+                            {processing ? t('register.submitting') : t('register.submit')}
                         </button>
                     </form>
 
                     <p className="text-[oklch(0.55_0.02_255)] text-sm mt-6 text-center">
-                        Har du allerede en konto?{' '}
+                        {t('register.has_account')}{' '}
                         <Link href="/login" className="text-[oklch(0.22_0.04_255)] font-medium underline underline-offset-4 hover:text-[oklch(0.45_0.04_255)] transition-colors">
-                            Log ind
+                            {t('register.log_in')}
                         </Link>
                     </p>
                 </div>

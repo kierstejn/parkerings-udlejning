@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
         ]);
         $middleware->alias([
-            'udlejer' => \App\Http\Middleware\EnsureUdlejerVerified::class,
+            'landlord' => \App\Http\Middleware\EnsureLandlordVerified::class,
         ]);
         $middleware->redirectGuestsTo('/login');
     })

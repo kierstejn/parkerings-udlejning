@@ -1,14 +1,22 @@
 import { useForm } from '@inertiajs/react';
 import { ShieldCheck, Clock, Banknote, Lock } from 'lucide-react';
 import DashboardLayout from '../../../Layouts/DashboardLayout';
+import { useLanguage } from '../../../contexts/LanguageContext';
 
-export default function UdlejerIndex() {
+export default function LandlordIndex() {
     const { post, processing, errors } = useForm({});
+    const { t } = useLanguage();
 
     function handleVerify(e) {
         e.preventDefault();
-        post('/udlejer/verify');
+        post('/landlord/verify');
     }
+
+    const features = [
+        { icon: ShieldCheck, labelKey: 'landlord.feat1_label', descKey: 'landlord.feat1_desc' },
+        { icon: Clock,       labelKey: 'landlord.feat2_label', descKey: 'landlord.feat2_desc' },
+        { icon: Banknote,    labelKey: 'landlord.feat3_label', descKey: 'landlord.feat3_desc' },
+    ];
 
     return (
         <DashboardLayout>
@@ -17,33 +25,29 @@ export default function UdlejerIndex() {
                     className="text-[oklch(0.72_0.14_75)] mb-3"
                     style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.2em' }}
                 >
-                    For udlejere
+                    {t('landlord.for_landlords')}
                 </p>
                 <h1
                     className="text-[oklch(0.18_0.03_255)] mb-3 uppercase"
                     style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em' }}
                 >
-                    Bliv udlejer
+                    {t('landlord.become')}
                 </h1>
                 <p className="text-sm text-[oklch(0.50_0.025_255)] leading-relaxed mb-10">
-                    Som udlejer på ParkDel kan du tjene penge på din parkeringsplads. Vi kræver en engangsverifikation via MitID for at bekræfte din identitet og sikre alle brugere.
+                    {t('landlord.body')}
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-10">
-                    {[
-                        { icon: ShieldCheck, label: 'Sikker identitet', desc: 'Verificeret via MitID' },
-                        { icon: Clock,       label: 'Sæt dine tider',   desc: 'Fuld fleksibilitet' },
-                        { icon: Banknote,    label: 'Tjen penge',        desc: 'Udbetaling hver måned' },
-                    ].map(({ icon: Icon, label, desc }) => (
-                        <div key={label} className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)] px-4 py-5">
+                    {features.map(({ icon: Icon, labelKey, descKey }) => (
+                        <div key={labelKey} className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)] px-4 py-5">
                             <Icon className="w-5 h-5 text-[oklch(0.72_0.14_75)] mb-3" strokeWidth={1.5} />
                             <p
                                 className="text-[oklch(0.18_0.03_255)] text-xs font-semibold uppercase tracking-wide mb-1"
                                 style={{ fontFamily: 'var(--font-display)' }}
                             >
-                                {label}
+                                {t(labelKey)}
                             </p>
-                            <p className="text-[oklch(0.58_0.02_255)] text-xs">{desc}</p>
+                            <p className="text-[oklch(0.58_0.02_255)] text-xs">{t(descKey)}</p>
                         </div>
                     ))}
                 </div>
@@ -58,16 +62,16 @@ export default function UdlejerIndex() {
                                 className="text-[oklch(0.18_0.03_255)] text-sm font-semibold uppercase tracking-wide"
                                 style={{ fontFamily: 'var(--font-display)' }}
                             >
-                                MitID-verificering krævet
+                                {t('landlord.mitid_required')}
                             </p>
                             <p className="text-xs text-[oklch(0.58_0.02_255)]">
-                                Engangsproces · tager under 2 minutter
+                                {t('landlord.one_time')}
                             </p>
                         </div>
                     </div>
 
                     <p className="text-xs text-[oklch(0.55_0.02_255)] leading-relaxed mb-5">
-                        Du vil blive viderestillet til MitID for at bekræfte din identitet. Når du vender tilbage, er din konto aktiveret som udlejer.
+                        {t('landlord.redirect_body')}
                     </p>
 
                     {errors.message && (
@@ -83,7 +87,7 @@ export default function UdlejerIndex() {
                             className="w-full py-3.5 bg-[oklch(0.22_0.04_255)] text-[oklch(0.965_0.008_85)] text-xs font-bold tracking-widest uppercase hover:bg-[oklch(0.30_0.04_255)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{ fontFamily: 'var(--font-display)' }}
                         >
-                            {processing ? 'Verificerer…' : 'Verificér med MitID'}
+                            {processing ? t('landlord.verifying') : t('landlord.verify_btn')}
                         </button>
                     </form>
                 </div>

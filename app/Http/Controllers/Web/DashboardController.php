@@ -7,13 +7,13 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function profil()
+    public function profile()
     {
-        return Inertia::render('Dashboard/Profil');
+        return Inertia::render('Dashboard/Profile');
     }
 
-    public function bookinger()
+    public function bookings()
     {
-        return Inertia::render('Dashboard/Bookinger');
+        return Inertia::render('Dashboard/Bookings');
     }
 }

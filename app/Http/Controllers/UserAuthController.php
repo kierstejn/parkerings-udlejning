@@ -132,10 +132,10 @@ class UserAuthController extends Controller
         return response()->json($request->user());
     }
 
-    public function verifyUdlejer(Request $request): \Illuminate\Http\JsonResponse
+    public function verifyLandlord(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = $request->user();
-        $user->udlejer_verified = true;
+        $user->landlord_verified = true;
         $user->save();
 
         return response()->json($user);

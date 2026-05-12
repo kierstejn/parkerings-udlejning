@@ -1,10 +1,13 @@
 import { Link, useForm } from '@inertiajs/react';
+import { useLanguage } from '../../contexts/LanguageContext';
+import LanguageSelector from '../../Components/LanguageSelector';
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
     });
+    const { t } = useLanguage();
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -13,7 +16,7 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-[oklch(0.965_0.008_85)] flex flex-col" style={{ fontFamily: 'var(--font-body)' }}>
-            <header className="px-6 py-5 border-b border-[oklch(0.88_0.015_85)]">
+            <header className="px-6 py-5 border-b border-[oklch(0.88_0.015_85)] flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2.5 w-fit">
                     <div
                         className="w-8 h-8 bg-[oklch(0.22_0.04_255)] flex items-center justify-center text-[oklch(0.72_0.14_75)]"
@@ -28,6 +31,7 @@ export default function Login() {
                         ParkDel
                     </span>
                 </Link>
+                <LanguageSelector />
             </header>
 
             <main className="flex-1 flex items-center justify-center px-6 py-16">
@@ -36,7 +40,7 @@ export default function Login() {
                         className="text-[oklch(0.18_0.03_255)] mb-8 uppercase"
                         style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.02em' }}
                     >
-                        Log ind
+                        {t('login.title')}
                     </h1>
 
                     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
@@ -46,7 +50,7 @@ export default function Login() {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                placeholder="din@email.dk"
+                                placeholder={t('login.email_placeholder')}
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 className={inputCls}
@@ -54,7 +58,7 @@ export default function Login() {
                             {errors.email && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.email}</p>}
                         </Field>
 
-                        <Field label="Adgangskode" htmlFor="password">
+                        <Field label={t('login.password')} htmlFor="password">
                             <input
                                 id="password"
                                 type="password"
@@ -69,14 +73,14 @@ export default function Login() {
                         </Field>
 
                         <button type="submit" disabled={processing} className={submitCls}>
-                            {processing ? 'Logger ind…' : 'Log ind'}
+                            {processing ? t('login.submitting') : t('login.submit')}
                         </button>
                     </form>
 
                     <p className="text-[oklch(0.55_0.02_255)] text-sm mt-6 text-center">
-                        Har du ikke en konto?{' '}
+                        {t('login.no_account')}{' '}
                         <Link href="/register" className="text-[oklch(0.22_0.04_255)] font-medium underline underline-offset-4 hover:text-[oklch(0.45_0.04_255)] transition-colors">
-                            Opret konto
+                            {t('login.sign_up')}
                         </Link>
                     </p>
                 </div>

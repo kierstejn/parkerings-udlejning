@@ -1,8 +1,10 @@
 import { usePage } from '@inertiajs/react';
 import DashboardLayout from '../../Layouts/DashboardLayout';
+import { useLanguage } from '../../contexts/LanguageContext';
 
-export default function Profil() {
+export default function Profile() {
     const { auth } = usePage().props;
+    const { t } = useLanguage();
     const user = auth.user;
 
     return (
@@ -12,7 +14,7 @@ export default function Profil() {
                     className="text-[oklch(0.18_0.03_255)] mb-8 uppercase"
                     style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em' }}
                 >
-                    Profil
+                    {t('profile.title')}
                 </h1>
 
                 <div className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)]">
@@ -21,14 +23,14 @@ export default function Profil() {
                             className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[oklch(0.65_0.025_255)]"
                             style={{ fontFamily: 'var(--font-display)' }}
                         >
-                            Kontooplysninger
+                            {t('profile.account_details')}
                         </p>
                     </div>
 
                     <div className="divide-y divide-[oklch(0.92_0.01_85)]">
-                        <Row label="Navn"    value={user?.name} />
-                        <Row label="Email"   value={user?.email} />
-                        <Row label="Oprettet" value={user?.created_at ? formatDate(user.created_at) : undefined} />
+                        <Row label={t('profile.name')}    value={user?.name} />
+                        <Row label={t('profile.email')}   value={user?.email} />
+                        <Row label={t('profile.created')} value={user?.created_at ? formatDate(user.created_at) : undefined} />
                     </div>
                 </div>
             </div>

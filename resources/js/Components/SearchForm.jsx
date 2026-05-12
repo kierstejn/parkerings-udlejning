@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function SearchForm() {
     const [query, setQuery] = useState('');
+    const { t } = useLanguage();
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -14,7 +16,7 @@ export default function SearchForm() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Adresse eller by…"
+                placeholder={t('search.placeholder')}
                 className="flex-1 px-5 py-4 bg-[oklch(0.97_0.006_85)] text-[oklch(0.18_0.03_255)] placeholder:text-[oklch(0.55_0.025_255)] text-sm focus:outline-none focus:ring-2 focus:ring-[oklch(0.72_0.14_75)] focus:ring-inset"
             />
             <button
@@ -23,7 +25,7 @@ export default function SearchForm() {
                 style={{ fontFamily: 'var(--font-display)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}
             >
                 <Search className="w-4 h-4" strokeWidth={2} />
-                Søg
+                {t('search.btn')}
             </button>
         </form>
     );

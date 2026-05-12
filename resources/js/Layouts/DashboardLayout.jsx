@@ -1,8 +1,11 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import DashboardSidebar from '../Components/DashboardSidebar';
+import LanguageSelector from '../Components/LanguageSelector';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function DashboardLayout({ children }) {
     const { auth } = usePage().props;
+    const { t } = useLanguage();
 
     function handleLogout() {
         router.post('/logout');
@@ -28,6 +31,7 @@ export default function DashboardLayout({ children }) {
                     </Link>
 
                     <div className="flex items-center gap-5">
+                        <LanguageSelector />
                         {auth.user && (
                             <span className="text-sm text-[oklch(0.50_0.025_255)] hidden sm:block">
                                 {auth.user.name}
@@ -38,7 +42,7 @@ export default function DashboardLayout({ children }) {
                             className="px-4 py-2 text-xs border border-[oklch(0.22_0.04_255)] text-[oklch(0.22_0.04_255)] font-semibold tracking-widest uppercase hover:bg-[oklch(0.22_0.04_255)] hover:text-[oklch(0.965_0.008_85)] transition-colors"
                             style={{ fontFamily: 'var(--font-display)' }}
                         >
-                            Log ud
+                            {t('dashboard.log_out')}
                         </button>
                     </div>
                 </div>

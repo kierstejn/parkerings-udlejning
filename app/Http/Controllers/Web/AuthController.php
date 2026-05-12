@@ -24,12 +24,12 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($credentials, remember: true)) {
-            return back()->withErrors(['email' => 'Ugyldig email eller adgangskode.'])->onlyInput('email');
+            return back()->withErrors(['email' => 'Invalid email or password.'])->onlyInput('email');
         }
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard.profil'));
+        return redirect()->intended(route('dashboard.profile'));
     }
 
     public function showRegister()
@@ -54,7 +54,7 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard.profil');
+        return redirect()->route('dashboard.profile');
     }
 
     public function logout(Request $request)

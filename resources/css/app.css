@@ -10,6 +10,38 @@
     --font-body:    'Figtree', ui-sans-serif, system-ui, sans-serif;
     --font-mono:    'Geist Mono', ui-monospace, monospace;
     --font-sans:    var(--font-body);
+
+    /* ── Ink — navy text / action scale ──────────── */
+    --color-ink:           oklch(0.18 0.03 255); /* primary headings */
+    --color-primary:       oklch(0.22 0.04 255); /* primary buttons, active nav */
+    --color-primary-hover: oklch(0.30 0.04 255); /* primary button hover */
+    --color-body:          oklch(0.50 0.02 255); /* paragraph text */
+    --color-muted:         oklch(0.55 0.02 255); /* muted text */
+    --color-faint:         oklch(0.60 0.02 255); /* captions, inactive icons */
+    --color-label:         oklch(0.65 0.015 255);/* section labels */
+    --color-ghost:         oklch(0.68 0.012 255);/* input placeholders */
+
+    /* ── Surface — warm off-white backgrounds ─────── */
+    --color-card:          oklch(0.992 0.004 85);
+    --color-input:         oklch(0.985 0.005 85);
+    --color-page:          oklch(0.965 0.008 85); /* page bg + text-on-dark */
+    --color-hover:         oklch(0.94 0.008 85);
+    --color-well:          oklch(0.93 0.008 85);  /* image placeholder bg */
+    --color-chip:          oklch(0.92 0.008 85);  /* badge / tag bg */
+    --color-line:          oklch(0.88 0.015 85);  /* main border */
+    --color-line-dim:      oklch(0.85 0.015 85);  /* subtle border */
+    --color-line-faint:    oklch(0.75 0.015 85);  /* dashed / ghost border */
+    --color-icon:          oklch(0.78 0.015 85);  /* empty-state icons */
+    --color-scrim:         oklch(0.12 0.02 255);  /* dark overlay */
+
+    /* ── Accent ───────────────────────────────────── */
+    --color-amber:         oklch(0.72 0.14 75);
+
+    /* ── Semantic ─────────────────────────────────── */
+    --color-danger:        oklch(0.45 0.18 25);
+    --color-danger-hover:  oklch(0.38 0.18 25);
+    --color-error:         oklch(0.50 0.18 25);
+    --color-success:       oklch(0.42 0.13 145);
 }
 
 :root {

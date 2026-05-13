@@ -164,6 +164,10 @@ export default {
     // ── Parking spot detail page ──────────────────────
     'spots.detail.back':             'Parkeringspladser',
     'spots.detail.edit':             'Rediger',
+    'spots.detail.delete_title':     'Slet parkeringsplads',
+    'spots.detail.delete_body':      'Er du sikker? Alle billeder og tilgængeligheder slettes permanent.',
+    'spots.detail.delete_confirm':   'Slet',
+    'spots.detail.delete_cancel':    'Annuller',
     'spots.detail.availability':     'Tilgængelighed',
     'spots.detail.no_availability':  'Ingen tilgængelighed registreret',
     'spots.detail.add_availability': 'Tilføj tilgængelighed',

@@ -12,20 +12,14 @@ export default function DashboardLayout({ children }) {
     }
 
     return (
-        <div className="min-h-screen bg-[oklch(0.965_0.008_85)] flex flex-col" style={{ fontFamily: 'var(--font-body)' }}>
-            <header className="sticky top-0 z-50 bg-[oklch(0.965_0.008_85_/_95%)] backdrop-blur-sm border-b border-[oklch(0.88_0.015_85)]">
+        <div className="min-h-screen bg-page flex flex-col">
+            <header className="sticky top-0 z-50 bg-page/95 backdrop-blur-sm border-b border-line">
                 <div className="h-16 px-6 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2.5">
-                        <div
-                            className="w-8 h-8 bg-[oklch(0.22_0.04_255)] flex items-center justify-center text-[oklch(0.72_0.14_75)]"
-                            style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1rem' }}
-                        >
+                        <div className="w-8 h-8 bg-primary flex items-center justify-center text-amber font-display font-extrabold text-base">
                             P
                         </div>
-                        <span
-                            className="text-[oklch(0.18_0.03_255)]"
-                            style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '0.06em', textTransform: 'uppercase' }}
-                        >
+                        <span className="text-ink font-display font-bold uppercase tracking-widest" style={{ fontSize: '1.05rem' }}>
                             ParkDel
                         </span>
                     </Link>
@@ -33,14 +27,13 @@ export default function DashboardLayout({ children }) {
                     <div className="flex items-center gap-5">
                         <LanguageSelector />
                         {auth.user && (
-                            <span className="text-sm text-[oklch(0.50_0.025_255)] hidden sm:block">
+                            <span className="text-sm text-body hidden sm:block">
                                 {auth.user.name}
                             </span>
                         )}
                         <button
                             onClick={handleLogout}
-                            className="px-4 py-2 text-xs border border-[oklch(0.22_0.04_255)] text-[oklch(0.22_0.04_255)] font-semibold tracking-widest uppercase hover:bg-[oklch(0.22_0.04_255)] hover:text-[oklch(0.965_0.008_85)] transition-colors"
-                            style={{ fontFamily: 'var(--font-display)' }}
+                            className="px-4 py-2 text-xs border border-primary text-primary font-semibold tracking-widest uppercase hover:bg-primary hover:text-page transition-colors font-display"
                         >
                             {t('dashboard.log_out')}
                         </button>

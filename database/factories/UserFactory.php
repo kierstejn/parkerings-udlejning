@@ -41,4 +41,9 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    public function landlord(): static
+    {
+        return $this->state(['landlord_verified' => true]);
+    }
 }

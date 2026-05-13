@@ -3,7 +3,9 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { ArrowLeft, CalendarPlus, ChevronRight, ImageIcon, Pencil, Receipt, Trash2, X } from 'lucide-react';
 import DashboardLayout from '../../../Layouts/DashboardLayout';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { FormField, inputCls, submitCls } from './ParkingSpots';
+import { FormField, inputCls, submitCls } from '../../../Components/ui/FormField';
+import { EmptyState } from '../../../Components/ui/EmptyState';
+import { ConfirmDialog } from '../../../Components/ui/ConfirmDialog';
 
 const SECTIONS    = ['availability', 'rentals', 'media'];
 const AVAIL_TABS  = ['upcoming', 'active', 'past'];
@@ -14,40 +16,57 @@ export default function ParkingSpotDetail() {
     const { t } = useLanguage();
     const [activeSection, setActiveSection] = useState('availability');
     const [showAddAvail, setShowAddAvail]   = useState(false);
+    const [deleting, setDeleting]           = useState(false);
 
     const formOpen = showAddAvail;
 
     return (
         <DashboardLayout>
+            <ConfirmDialog
+                open={deleting}
+                title={t('spots.detail.delete_title')}
+                body={t('spots.detail.delete_body')}
+                confirmLabel={t('spots.detail.delete_confirm')}
+                cancelLabel={t('spots.detail.delete_cancel')}
+                onConfirm={() => router.delete(`/landlord/parking-spots/${spot.id}`)}
+                onCancel={() => setDeleting(false)}
+            />
+
             {/* ── Header ─────────────────────────────────── */}
-            <div className="flex items-center justify-between mb-8 max-w-2xl">
+            <div className="flex items-center justify-between mb-8">
                 <Link
                     href="/landlord/parking-spots"
-                    className="flex items-center gap-1.5 text-xs font-semibold text-[oklch(0.55_0.02_255)] hover:text-[oklch(0.22_0.04_255)] uppercase tracking-widest transition-colors"
-                    style={{ fontFamily: 'var(--font-display)' }}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-muted hover:text-ink uppercase tracking-widest transition-colors font-display"
                 >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     {t('spots.detail.back')}
                 </Link>
-                <Link
-                    href={`/landlord/parking-spots/${spot.id}/edit`}
-                    className="flex items-center gap-2 px-4 py-2.5 border border-[oklch(0.88_0.015_85)] text-[oklch(0.45_0.025_255)] text-xs font-semibold tracking-widest uppercase hover:border-[oklch(0.55_0.02_255)] hover:text-[oklch(0.22_0.04_255)] transition-colors"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                >
-                    <Pencil className="w-3.5 h-3.5" />
-                    {t('spots.detail.edit')}
-                </Link>
+                <div className="flex items-center gap-2">
+                    <Link
+                        href={`/landlord/parking-spots/${spot.id}/edit`}
+                        className="flex items-center gap-2 px-4 py-2.5 border border-line text-faint text-xs font-semibold tracking-widest uppercase hover:border-muted hover:text-ink transition-colors font-display"
+                    >
+                        <Pencil className="w-3.5 h-3.5" />
+                        {t('spots.detail.edit')}
+                    </Link>
+                    <button
+                        onClick={() => setDeleting(true)}
+                        className="flex items-center gap-2 px-4 py-2.5 border border-line text-faint text-xs font-semibold tracking-widest uppercase hover:border-danger hover:text-danger transition-colors font-display"
+                    >
+                        <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                </div>
             </div>
 
             {formOpen ? (
                 /* ── Form-only view ─────────────────────── */
-                <div className="max-w-2xl">
-                    <div className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)]">
-                        <div className="px-6 py-4 border-b border-[oklch(0.88_0.015_85)] flex items-center justify-between">
-                            <p className="text-xs font-semibold uppercase tracking-widest text-[oklch(0.18_0.03_255)]" style={{ fontFamily: 'var(--font-display)' }}>
+                <div>
+                    <div className="border border-line bg-card">
+                        <div className="px-6 py-4 border-b border-line flex items-center justify-between">
+                            <p className="text-xs font-semibold uppercase tracking-widest text-ink font-display">
                                 {t('spots.detail.add_availability')}
                             </p>
-                            <button onClick={() => setShowAddAvail(false)} className="text-[oklch(0.60_0.02_255)] hover:text-[oklch(0.22_0.04_255)] transition-colors">
+                            <button onClick={() => setShowAddAvail(false)} className="text-faint hover:text-ink transition-colors">
                                 <X className="w-4 h-4" />
                             </button>
                         </div>
@@ -59,20 +78,20 @@ export default function ParkingSpotDetail() {
             ) : (
                 <>
                     {/* ── Spot meta ───────────────────────── */}
-                    <div className="max-w-2xl mb-10">
+                    <div className="mb-10">
                         <h1
-                            className="text-[oklch(0.18_0.03_255)] uppercase leading-tight mb-3"
-                            style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em' }}
+                            className="text-ink uppercase leading-tight mb-3 font-display"
+                            style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em' }}
                         >
                             {spot.title}
                         </h1>
-                        <p className="text-sm text-[oklch(0.55_0.02_255)] mb-4">{spot.address}</p>
+                        <p className="text-sm text-muted mb-4">{spot.address}</p>
                         <div className="flex flex-wrap gap-2 mb-4">
                             <TypeBadge label={t(`spots.type.${spot.type}`)} />
                             <TypeBadge label={t(`spots.size.${spot.size}`)} accent />
                         </div>
                         {spot.description && (
-                            <p className="text-sm text-[oklch(0.40_0.02_255)] leading-relaxed max-w-prose">{spot.description}</p>
+                            <p className="text-sm text-body leading-relaxed max-w-prose">{spot.description}</p>
                         )}
                     </div>
 
@@ -86,12 +105,11 @@ export default function ParkingSpotDetail() {
                                     key={s}
                                     onClick={() => setActiveSection(s)}
                                     className={[
-                                        'w-full text-left px-3 py-2.5 text-xs font-semibold uppercase tracking-widest transition-colors mb-0.5',
+                                        'w-full text-left px-3 py-2.5 text-xs font-semibold uppercase tracking-widest transition-colors mb-0.5 font-display',
                                         activeSection === s
-                                            ? 'bg-[oklch(0.22_0.04_255)] text-[oklch(0.965_0.008_85)]'
-                                            : 'text-[oklch(0.55_0.02_255)] hover:text-[oklch(0.22_0.04_255)] hover:bg-[oklch(0.94_0.008_85)]',
+                                            ? 'bg-primary text-page'
+                                            : 'text-muted hover:text-ink hover:bg-hover',
                                     ].join(' ')}
-                                    style={{ fontFamily: 'var(--font-display)' }}
                                 >
                                     {t(`spots.detail.section.${s}`)}
                                 </button>
@@ -99,7 +117,7 @@ export default function ParkingSpotDetail() {
                         </nav>
 
                         {/* Scrollable section content */}
-                        <div className="flex-1 min-w-0 max-w-2xl">
+                        <div className="flex-1 min-w-0">
                             {activeSection === 'availability' && (
                                 <AvailabilitySection
                                     spot={spot}
@@ -162,10 +180,7 @@ function MediaSection({ spot }) {
 
     return (
         <div>
-            <p
-                className="text-[9px] font-bold uppercase tracking-[0.12em] text-[oklch(0.65_0.015_255)] mb-4 px-1"
-                style={{ fontFamily: 'var(--font-display)' }}
-            >
+            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-label mb-4 px-1 font-display">
                 {t('spots.media.public_label')}
             </p>
 
@@ -174,24 +189,24 @@ function MediaSection({ spot }) {
             ) : (
                 <div className="grid grid-cols-4 gap-2 mb-4">
                     {images.map((img) => (
-                        <div key={img.id} className="relative group aspect-square bg-[oklch(0.93_0.008_85)] overflow-hidden">
+                        <div key={img.id} className="relative group aspect-square bg-well overflow-hidden">
                             <img src={img.url} alt="" className="w-full h-full object-cover" />
                             <button
                                 type="button"
                                 onClick={() => deleteImage(img.id)}
-                                className="absolute top-1 right-1 w-5 h-5 bg-[oklch(0.12_0.02_255/0.75)] text-[oklch(0.965_0.008_85)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-1 right-1 w-5 h-5 bg-scrim/75 text-page flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 <X className="w-3 h-3" />
                             </button>
                         </div>
                     ))}
                     {previews.map((p, i) => (
-                        <div key={`preview-${i}`} className="relative group aspect-square bg-[oklch(0.93_0.008_85)] overflow-hidden opacity-60">
+                        <div key={`preview-${i}`} className="relative group aspect-square bg-well overflow-hidden opacity-60">
                             <img src={p.url} alt={p.name} className="w-full h-full object-cover" />
                             <button
                                 type="button"
                                 onClick={() => removePreview(i)}
-                                className="absolute top-1 right-1 w-5 h-5 bg-[oklch(0.18_0.03_255)] text-[oklch(0.965_0.008_85)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-1 right-1 w-5 h-5 bg-primary text-page flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 <X className="w-3 h-3" />
                             </button>
@@ -207,10 +222,12 @@ function MediaSection({ spot }) {
                     type="button"
                     onClick={() => fileInputRef.current.click()}
                     disabled={remaining <= 0}
-                    className="flex items-center gap-2 px-4 py-2.5 border border-dashed border-[oklch(0.75_0.015_85)] text-xs text-[oklch(0.55_0.02_255)] hover:border-[oklch(0.55_0.02_255)] hover:text-[oklch(0.35_0.025_255)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2.5 border border-dashed border-line-faint text-xs text-muted hover:border-muted hover:text-body transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                     <ImageIcon className="w-3.5 h-3.5" />
-                    {images.length + previews.length === 0 ? t('spots.media.add_images') : `${t('spots.media.add_more')} (${images.length + previews.length}/10)`}
+                    {images.length + previews.length === 0
+                        ? t('spots.media.add_images')
+                        : `${t('spots.media.add_more')} (${images.length + previews.length}/10)`}
                 </button>
 
                 {previews.length > 0 && (
@@ -248,8 +265,7 @@ function AvailabilitySection({ spot, onOpenForm }) {
                 <FilterTabs tabs={AVAIL_TABS} active={filter} onChange={setFilter} prefix="spots.avail.filter" counts={buckets} />
                 <button
                     onClick={onOpenForm}
-                    className="flex items-center gap-2 px-3 py-2 bg-[oklch(0.22_0.04_255)] text-[oklch(0.965_0.008_85)] text-xs font-semibold tracking-widest uppercase hover:bg-[oklch(0.30_0.04_255)] transition-colors shrink-0"
-                    style={{ fontFamily: 'var(--font-display)' }}
+                    className="flex items-center gap-2 px-3 py-2 bg-primary text-page text-xs font-semibold tracking-widest uppercase hover:bg-primary-hover transition-colors shrink-0 font-display"
                 >
                     <CalendarPlus className="w-3 h-3" />
                     {t('spots.detail.add_availability')}
@@ -312,12 +328,11 @@ function FilterTabs({ tabs, active, onChange, prefix, counts }) {
                         key={tab}
                         onClick={() => onChange(tab)}
                         className={[
-                            'px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors flex items-center gap-1.5',
+                            'px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors flex items-center gap-1.5 font-display',
                             active === tab
-                                ? 'bg-[oklch(0.22_0.04_255)] text-[oklch(0.965_0.008_85)]'
-                                : 'text-[oklch(0.55_0.02_255)] hover:text-[oklch(0.30_0.03_255)]',
+                                ? 'bg-primary text-page'
+                                : 'text-muted hover:text-primary',
                         ].join(' ')}
-                        style={{ fontFamily: 'var(--font-display)' }}
                     >
                         {t(`${prefix}.${tab}`)}
                         {counts && (
@@ -332,54 +347,15 @@ function FilterTabs({ tabs, active, onChange, prefix, counts }) {
     );
 }
 
-function EmptyState({ icon: Icon, label }) {
-    return (
-        <div className="border border-dashed border-[oklch(0.85_0.015_85)] py-12 flex flex-col items-center text-center">
-            <Icon className="w-8 h-8 text-[oklch(0.78_0.015_85)] mb-3" strokeWidth={1} />
-            <p className="text-sm text-[oklch(0.55_0.02_255)]">{label}</p>
-        </div>
-    );
-}
-
 function TypeBadge({ label, accent = false }) {
     return (
         <span
-            className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${accent ? 'bg-[oklch(0.72_0.14_75)] text-[oklch(0.18_0.03_255)]' : 'bg-[oklch(0.92_0.008_85)] text-[oklch(0.40_0.025_255)]'}`}
-            style={{ fontFamily: 'var(--font-display)' }}
+            className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide font-display ${
+                accent ? 'bg-amber text-ink' : 'bg-chip text-faint'
+            }`}
         >
             {label}
         </span>
-    );
-}
-
-// ── Confirm dialog ──────────────────────────────────────────────
-
-function ConfirmDialog({ open, onConfirm, onCancel }) {
-    const { t } = useLanguage();
-    if (!open) return null;
-    return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            style={{ background: 'oklch(0.12 0.02 255 / 0.45)' }}
-            onClick={onCancel}
-        >
-            <div className="bg-[oklch(0.992_0.004_85)] border border-[oklch(0.88_0.015_85)] p-8 max-w-sm w-full mx-4" onClick={(e) => e.stopPropagation()}>
-                <p className="text-[oklch(0.18_0.03_255)] uppercase mb-2" style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 800, letterSpacing: '0.02em' }}>
-                    {t('spots.avail.confirm_delete_title')}
-                </p>
-                <p className="text-sm text-[oklch(0.50_0.02_255)] mb-6 leading-relaxed">
-                    {t('spots.avail.confirm_delete_body')}
-                </p>
-                <div className="flex gap-3">
-                    <button onClick={onCancel} className="flex-1 py-2.5 border border-[oklch(0.85_0.015_85)] text-xs font-semibold uppercase tracking-widest text-[oklch(0.45_0.025_255)] hover:border-[oklch(0.65_0.02_255)] transition-colors" style={{ fontFamily: 'var(--font-display)' }}>
-                        {t('spots.avail.confirm_cancel')}
-                    </button>
-                    <button onClick={onConfirm} className="flex-1 py-2.5 bg-[oklch(0.45_0.18_25)] text-[oklch(0.965_0.008_85)] text-xs font-semibold uppercase tracking-widest hover:bg-[oklch(0.38_0.18_25)] transition-colors" style={{ fontFamily: 'var(--font-display)' }}>
-                        {t('spots.avail.confirm_delete')}
-                    </button>
-                </div>
-            </div>
-        </div>
     );
 }
 
@@ -408,34 +384,44 @@ function AvailabilityRow({ avail }) {
         <>
             <ConfirmDialog
                 open={confirming}
-                onConfirm={() => { router.delete(`/landlord/parking-spots/availability/${avail.id}`, { preserveScroll: true }); setConfirming(false); }}
+                title={t('spots.avail.confirm_delete_title')}
+                body={t('spots.avail.confirm_delete_body')}
+                confirmLabel={t('spots.avail.confirm_delete')}
+                cancelLabel={t('spots.avail.confirm_cancel')}
+                onConfirm={() => {
+                    router.delete(`/landlord/parking-spots/availability/${avail.id}`, { preserveScroll: true });
+                    setConfirming(false);
+                }}
                 onCancel={() => setConfirming(false)}
             />
-            <div className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)] px-5 py-4 flex items-start justify-between gap-4">
+            <div className="border border-line bg-card px-5 py-4 flex items-start justify-between gap-4">
                 <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="px-1.5 py-0.5 bg-[oklch(0.92_0.008_85)] text-[oklch(0.40_0.025_255)] text-[10px] font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-display)' }}>
+                        <span className="px-1.5 py-0.5 bg-chip text-faint text-[10px] font-bold uppercase tracking-wide font-display">
                             {t(`spots.avail.type.${avail.booking_type}`)}
                         </span>
-                        <span className="text-sm font-semibold text-[oklch(0.18_0.03_255)]">{priceLabel()}</span>
+                        <span className="text-sm font-semibold text-ink">{priceLabel()}</span>
                     </div>
-                    <p className="text-xs text-[oklch(0.55_0.02_255)]">
+                    <p className="text-xs text-muted">
                         {fmt(avail.starts_at)} <ChevronRight className="w-3 h-3 inline mx-0.5 opacity-50" /> {fmt(avail.ends_at)}
                     </p>
                     {(avail.min_duration || avail.max_duration) && (
-                        <p className="text-xs text-[oklch(0.60_0.02_255)] mt-0.5">
+                        <p className="text-xs text-faint mt-0.5">
                             {avail.min_duration && `${t(avail.booking_type === 'day' ? 'spots.avail.min_duration_day' : 'spots.avail.min_duration')}: ${avail.min_duration}`}
                             {avail.min_duration && avail.max_duration && ' · '}
                             {avail.max_duration && `${t(avail.booking_type === 'day' ? 'spots.avail.max_duration_day' : 'spots.avail.max_duration')}: ${avail.max_duration}`}
                         </p>
                     )}
                     {avail.day_start_time && avail.day_end_time && (
-                        <p className="text-xs text-[oklch(0.60_0.02_255)] mt-0.5">
+                        <p className="text-xs text-faint mt-0.5">
                             {avail.day_start_time.slice(0, 5)} – {avail.day_end_time.slice(0, 5)}
                         </p>
                     )}
                 </div>
-                <button onClick={() => setConfirming(true)} className="shrink-0 p-2 text-[oklch(0.60_0.02_255)] hover:text-[oklch(0.50_0.18_25)] hover:bg-[oklch(0.94_0.008_85)] transition-colors">
+                <button
+                    onClick={() => setConfirming(true)}
+                    className="shrink-0 p-2 text-faint hover:text-error hover:bg-hover transition-colors"
+                >
                     <Trash2 className="w-4 h-4" />
                 </button>
             </div>
@@ -448,11 +434,11 @@ function RentalRow({ rental }) {
     const fmt = (iso) => new Date(iso).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
 
     return (
-        <div className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)] px-5 py-4">
+        <div className="border border-line bg-card px-5 py-4">
             <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-semibold text-[oklch(0.18_0.03_255)]">{rental.tenant_name ?? '—'}</span>
+                <span className="text-sm font-semibold text-ink">{rental.tenant_name ?? '—'}</span>
             </div>
-            <p className="text-xs text-[oklch(0.55_0.02_255)]">
+            <p className="text-xs text-muted">
                 {fmt(rental.starts_at)} <ChevronRight className="w-3 h-3 inline mx-0.5 opacity-50" /> {fmt(rental.ends_at)}
             </p>
         </div>
@@ -532,13 +518,12 @@ function AvailabilityForm({ spotId, onSuccess }) {
                                 type="button"
                                 onClick={() => changeType(value)}
                                 className={[
-                                    'flex-1 py-3 text-xs font-semibold uppercase tracking-widest transition-colors border',
+                                    'flex-1 py-3 text-xs font-semibold uppercase tracking-widest transition-colors border font-display',
                                     i > 0 ? '-ml-px' : '',
                                     data.booking_type === value
-                                        ? 'bg-[oklch(0.22_0.04_255)] text-[oklch(0.965_0.008_85)] border-[oklch(0.22_0.04_255)] z-10 relative'
-                                        : 'bg-[oklch(0.985_0.005_85)] text-[oklch(0.55_0.02_255)] border-[oklch(0.85_0.015_85)] hover:text-[oklch(0.22_0.04_255)]',
+                                        ? 'bg-primary text-page border-primary z-10 relative'
+                                        : 'bg-input text-muted border-line-dim hover:text-ink',
                                 ].join(' ')}
-                                style={{ fontFamily: 'var(--font-display)' }}
                             >
                                 {t(key)}
                             </button>
@@ -548,28 +533,28 @@ function AvailabilityForm({ spotId, onSuccess }) {
 
                 <FormField label={t('spots.avail.starts_at')}>
                     <input type={useDateOnly ? 'date' : 'datetime-local'} required min={minStart} value={data.starts_at} onChange={(e) => set('starts_at', e.target.value)} className={inputCls} />
-                    {errors.starts_at && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.starts_at}</p>}
+                    {errors.starts_at && <p className="text-xs text-error mt-1">{errors.starts_at}</p>}
                 </FormField>
 
                 <FormField label={t('spots.avail.ends_at')}>
                     <input type={useDateOnly ? 'date' : 'datetime-local'} required min={minEnd} value={data.ends_at} onChange={(e) => set('ends_at', e.target.value)} className={inputCls} />
-                    {errors.ends_at && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.ends_at}</p>}
+                    {errors.ends_at && <p className="text-xs text-error mt-1">{errors.ends_at}</p>}
                 </FormField>
 
                 <FormField label={t(priceKey)} className="col-span-2">
                     <input type="number" required min={0} step={0.5} value={data.price} onChange={(e) => set('price', e.target.value)} placeholder="0" className={inputCls} />
-                    {errors.price && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.price}</p>}
+                    {errors.price && <p className="text-xs text-error mt-1">{errors.price}</p>}
                 </FormField>
 
                 {!isLong && (
                     <>
                         <FormField label={`${t(minKey)} (${t('spots.avail.optional')})`}>
                             <input type="number" min={1} value={data.min_duration} onChange={(e) => set('min_duration', e.target.value)} placeholder="—" className={inputCls} />
-                            {errors.min_duration && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.min_duration}</p>}
+                            {errors.min_duration && <p className="text-xs text-error mt-1">{errors.min_duration}</p>}
                         </FormField>
                         <FormField label={`${t(maxKey)} (${t('spots.avail.optional')})`}>
                             <input type="number" min={1} value={data.max_duration} onChange={(e) => set('max_duration', e.target.value)} placeholder="—" className={inputCls} />
-                            {errors.max_duration && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.max_duration}</p>}
+                            {errors.max_duration && <p className="text-xs text-error mt-1">{errors.max_duration}</p>}
                         </FormField>
                     </>
                 )}
@@ -578,11 +563,11 @@ function AvailabilityForm({ spotId, onSuccess }) {
                     <>
                         <FormField label={t('spots.avail.day_start_time')}>
                             <input type="time" value={data.day_start_time} onChange={(e) => set('day_start_time', e.target.value)} className={inputCls} />
-                            {errors.day_start_time && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.day_start_time}</p>}
+                            {errors.day_start_time && <p className="text-xs text-error mt-1">{errors.day_start_time}</p>}
                         </FormField>
                         <FormField label={t('spots.avail.day_end_time')}>
                             <input type="time" value={data.day_end_time} onChange={(e) => set('day_end_time', e.target.value)} className={inputCls} />
-                            {errors.day_end_time && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.day_end_time}</p>}
+                            {errors.day_end_time && <p className="text-xs text-error mt-1">{errors.day_end_time}</p>}
                         </FormField>
                     </>
                 )}

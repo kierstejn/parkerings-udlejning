@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/landlord/parking-spots',                                   [LandlordController::class, 'storeParkingSpot'])->name('dashboard.landlord.parking-spots.store');
         Route::delete('/landlord/parking-spots/images/{image}',                  [LandlordController::class, 'destroyImage'])->name('dashboard.landlord.parking-spots.image.destroy');
         Route::delete('/landlord/parking-spots/availability/{availability}',     [LandlordController::class, 'destroyAvailability'])->name('dashboard.landlord.parking-spots.availability.destroy');
+        Route::delete('/landlord/parking-spots/{spot}',                          [LandlordController::class, 'destroyParkingSpot'])->name('dashboard.landlord.parking-spots.destroy');
         Route::get('/landlord/parking-spots/{spot}',                             [LandlordController::class, 'show'])->name('dashboard.landlord.parking-spots.show');
         Route::get('/landlord/parking-spots/{spot}/edit',                        [LandlordController::class, 'edit'])->name('dashboard.landlord.parking-spots.edit');
         Route::post('/landlord/parking-spots/{spot}',                            [LandlordController::class, 'updateParkingSpot'])->name('dashboard.landlord.parking-spots.update');

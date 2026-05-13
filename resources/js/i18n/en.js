@@ -164,6 +164,10 @@ export default {
     // ── Parking spot detail page ──────────────────────
     'spots.detail.back':             'Parking spots',
     'spots.detail.edit':             'Edit',
+    'spots.detail.delete_title':     'Delete parking spot',
+    'spots.detail.delete_body':      'Are you sure? All images and availabilities will be permanently deleted.',
+    'spots.detail.delete_confirm':   'Delete',
+    'spots.detail.delete_cancel':    'Cancel',
     'spots.detail.availability':     'Availability',
     'spots.detail.no_availability':  'No availability registered',
     'spots.detail.add_availability': 'Add availability',

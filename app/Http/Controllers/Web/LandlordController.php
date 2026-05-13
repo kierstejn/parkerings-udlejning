@@ -144,6 +144,19 @@ class LandlordController extends Controller
             ->with('success', 'Availability added.');
     }
 
+    public function destroyParkingSpot(Request $request, ParkingSpot $spot)
+    {
+        abort_if($spot->user_id !== $request->user()->id, 403);
+
+        foreach ($spot->images as $image) {
+            Storage::disk('s3')->delete($image->path);
+        }
+
+        $spot->delete();
+
+        return redirect()->route('dashboard.landlord.parking-spots');
+    }
+
     public function destroyAvailability(Request $request, ParkingSpotAvailability $availability)
     {
         abort_if($availability->parkingSpot->user_id !== $request->user()->id, 403);

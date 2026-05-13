@@ -13,10 +13,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->string('address');
-            $table->enum('type', ['carport', 'garage', 'outdoor', 'indoor']);
-            $table->enum('size', ['compact', 'standard', 'large']);
-            $table->decimal('price', 8, 2);
-            $table->enum('price_unit', ['hour', 'day', 'month']);
+            $table->string('type');
+            $table->string('size');
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

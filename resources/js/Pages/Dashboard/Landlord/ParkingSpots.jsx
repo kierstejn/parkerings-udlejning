@@ -3,6 +3,7 @@ import { Link, router, usePage, useForm } from '@inertiajs/react';
 import { Camera, Car, MapPin, Plus, X } from 'lucide-react';
 import DashboardLayout from '../../../Layouts/DashboardLayout';
 import { useLanguage } from '../../../contexts/LanguageContext';
+import { FormField, inputCls, submitCls } from '../../../Components/ui/FormField';
 
 export default function ParkingSpots() {
     const { spots } = usePage().props;
@@ -17,16 +18,15 @@ export default function ParkingSpots() {
             <div className="max-w-2xl">
                 <div className="flex items-center justify-between mb-8">
                     <h1
-                        className="text-[oklch(0.18_0.03_255)] uppercase"
-                        style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em' }}
+                        className="text-ink uppercase font-display"
+                        style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em' }}
                     >
                         {t('spots.title')}
                     </h1>
                     {!showForm && (
                         <button
                             onClick={openCreate}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-[oklch(0.22_0.04_255)] text-[oklch(0.965_0.008_85)] text-xs font-semibold tracking-widest uppercase hover:bg-[oklch(0.30_0.04_255)] transition-colors"
-                            style={{ fontFamily: 'var(--font-display)' }}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-page text-xs font-semibold tracking-widest uppercase hover:bg-primary-hover transition-colors font-display"
                         >
                             <Plus className="w-3.5 h-3.5" />
                             {t('spots.add_new')}
@@ -35,7 +35,7 @@ export default function ParkingSpots() {
                 </div>
 
                 {showForm && (
-                    <div className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)] mb-8">
+                    <div className="border border-line bg-card mb-8">
                         <FormHeader title={t('spots.new_form_title')} onClose={closeAll} />
                         <div className="p-6">
                             <CreateForm onSuccess={closeAll} />
@@ -45,15 +45,15 @@ export default function ParkingSpots() {
 
                 {!showForm && (
                     spots.length === 0 ? (
-                        <div className="border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)] py-20 flex flex-col items-center text-center">
-                            <Car className="w-10 h-10 text-[oklch(0.78_0.015_85)] mb-5" strokeWidth={1} />
+                        <div className="border border-line bg-card py-20 flex flex-col items-center text-center">
+                            <Car className="w-10 h-10 text-icon mb-5" strokeWidth={1} />
                             <p
-                                className="text-[oklch(0.18_0.03_255)] mb-2 uppercase"
-                                style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700, letterSpacing: '0.04em' }}
+                                className="text-ink mb-2 uppercase font-display"
+                                style={{ fontSize: '1.1rem', fontWeight: 700, letterSpacing: '0.04em' }}
                             >
                                 {t('spots.empty_title')}
                             </p>
-                            <p className="text-sm text-[oklch(0.55_0.02_255)] max-w-xs leading-relaxed">
+                            <p className="text-sm text-muted max-w-xs leading-relaxed">
                                 {t('spots.empty_body')}
                             </p>
                         </div>
@@ -72,11 +72,11 @@ export default function ParkingSpots() {
 
 function FormHeader({ title, onClose }) {
     return (
-        <div className="px-6 py-4 border-b border-[oklch(0.88_0.015_85)] flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[oklch(0.18_0.03_255)]" style={{ fontFamily: 'var(--font-display)' }}>
+        <div className="px-6 py-4 border-b border-line flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-widest text-ink font-display">
                 {title}
             </p>
-            <button onClick={onClose} className="text-[oklch(0.60_0.02_255)] hover:text-[oklch(0.22_0.04_255)] transition-colors">
+            <button onClick={onClose} className="text-faint hover:text-primary transition-colors">
                 <X className="w-4 h-4" />
             </button>
         </div>
@@ -92,17 +92,17 @@ function SpotCard({ spot }) {
     return (
         <Link
             href={`/landlord/parking-spots/${spot.id}`}
-            className="block border border-[oklch(0.88_0.015_85)] bg-[oklch(0.992_0.004_85)] overflow-hidden hover:border-[oklch(0.70_0.02_255)] transition-colors"
+            className="block border border-line bg-card overflow-hidden hover:border-label transition-colors"
         >
             {primary && (
-                <div className="relative aspect-[16/7] overflow-hidden bg-[oklch(0.93_0.008_85)]">
+                <div className="relative aspect-[16/7] overflow-hidden bg-well">
                     <img
                         src={primary.url}
                         alt={spot.title}
                         className="w-full h-full object-cover transition-transform duration-500 ease-out hover:scale-[1.02]"
                     />
                     {count > 1 && (
-                        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-[oklch(0.12_0.02_255/0.72)] backdrop-blur-sm text-[oklch(0.96_0.005_85)] text-[11px] font-medium tracking-wide">
+                        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-scrim/72 backdrop-blur-sm text-page text-[11px] font-medium tracking-wide">
                             <Camera className="w-3 h-3 opacity-80" />
                             {count}
                         </div>
@@ -112,15 +112,12 @@ function SpotCard({ spot }) {
             <div className="px-5 py-4 flex items-center justify-between gap-4">
                 <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                        <p className="text-sm font-semibold text-[oklch(0.18_0.03_255)] truncate">{spot.title}</p>
-                        <span
-                            className="shrink-0 px-1.5 py-0.5 bg-[oklch(0.72_0.14_75)] text-[oklch(0.18_0.03_255)] text-[10px] font-bold uppercase tracking-wide"
-                            style={{ fontFamily: 'var(--font-display)' }}
-                        >
+                        <p className="text-sm font-semibold text-ink truncate">{spot.title}</p>
+                        <span className="shrink-0 px-1.5 py-0.5 bg-amber text-ink text-[10px] font-bold uppercase tracking-wide font-display">
                             {t(`spots.size.${spot.size}`)}
                         </span>
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-[oklch(0.55_0.02_255)]">
+                    <div className="flex items-center gap-1 text-xs text-muted">
                         <MapPin className="w-3 h-3 shrink-0" />
                         <span className="truncate">{spot.address}</span>
                     </div>
@@ -189,12 +186,12 @@ function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey 
             <div className="grid grid-cols-2 gap-4">
                 <FormField label={t('spots.form.title')} className="col-span-2">
                     <input type="text" required value={data.title} onChange={(e) => setData('title', e.target.value)} placeholder={t('spots.form.title_ph')} className={inputCls} />
-                    {errors.title && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.title}</p>}
+                    {errors.title && <p className="text-xs text-error mt-1">{errors.title}</p>}
                 </FormField>
 
                 <FormField label={t('spots.form.address')} className="col-span-2">
                     <input type="text" required value={data.address} onChange={(e) => setData('address', e.target.value)} placeholder="Østerbrogade 124, 2100 København Ø" className={inputCls} />
-                    {errors.address && <p className="text-xs text-[oklch(0.50_0.18_25)] mt-1">{errors.address}</p>}
+                    {errors.address && <p className="text-xs text-error mt-1">{errors.address}</p>}
                 </FormField>
 
                 <FormField label={t('spots.form.type')}>
@@ -225,17 +222,3 @@ function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey 
         </form>
     );
 }
-
-export function FormField({ label, children, className = '' }) {
-    return (
-        <div className={`space-y-1.5 ${className}`}>
-            <label className="block text-xs font-semibold text-[oklch(0.45_0.025_255)] uppercase tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
-                {label}
-            </label>
-            {children}
-        </div>
-    );
-}
-
-export const inputCls = 'w-full px-4 py-3 bg-[oklch(0.985_0.005_85)] border border-[oklch(0.85_0.015_85)] text-[oklch(0.18_0.03_255)] text-sm placeholder:text-[oklch(0.68_0.012_255)] focus:outline-none focus:ring-2 focus:ring-[oklch(0.22_0.04_255)] focus:border-transparent transition-shadow resize-none';
-export const submitCls = 'w-full py-3.5 bg-[oklch(0.22_0.04_255)] text-[oklch(0.965_0.008_85)] font-bold hover:bg-[oklch(0.30_0.04_255)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs tracking-widest uppercase';

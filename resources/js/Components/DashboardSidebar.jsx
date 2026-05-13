@@ -9,7 +9,7 @@ export default function DashboardSidebar() {
     const pathname = url;
 
     return (
-        <aside className="w-56 shrink-0 border-r border-[oklch(0.88_0.015_85)] py-10 px-5 flex flex-col gap-8">
+        <aside className="w-56 shrink-0 border-r border-[oklch(0.88_0.015_85)] py-10 px-5 flex flex-col gap-8 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
             <SideSection label={t('sidebar.tenant')}>
                 <SideLink
                     href="/profile"

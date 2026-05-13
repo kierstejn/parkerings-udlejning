@@ -14,8 +14,6 @@ class ParkingSpot extends Model
         'address',
         'type',
         'size',
-        'price',
-        'price_unit',
         'description',
         'is_active',
     ];
@@ -23,7 +21,6 @@ class ParkingSpot extends Model
     protected function casts(): array
     {
         return [
-            'price'     => 'decimal:2',
             'is_active' => 'boolean',
         ];
     }
@@ -36,5 +33,10 @@ class ParkingSpot extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ParkingSpotImage::class)->orderBy('order');
+    }
+
+    public function availabilities(): HasMany
+    {
+        return $this->hasMany(ParkingSpotAvailability::class);
     }
 }

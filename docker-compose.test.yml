@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test_db
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+      args:
+        COMPOSER_FLAGS: ""
+    entrypoint: ["/entrypoint.test.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/var/www
+      - ./docker/php/entrypoint.test.sh:/entrypoint.test.sh:ro
+      - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
+    environment:
+      APP_ENV: testing
+      APP_KEY: base64:ZAK9D2Tuqjz62CYnCQLrXm7uwIBDrZMWlUgZ+BrW368=
+      APP_URL: http://localhost:9080
+      APP_DEBUG: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: test_db
+      DB_USERNAME: test
+      DB_PASSWORD: test
+      FILESYSTEM_DISK: local
+      SESSION_DRIVER: cookie
+      CACHE_STORE: array
+      QUEUE_CONNECTION: sync
+      GOOGLE_CLIENT_ID: ""
+      GOOGLE_CLIENT_SECRET: ""
+      GOOGLE_REDIRECT_URI: http://localhost:9080/auth/google/callback
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "9080:80"
+    volumes:
+      - ./public:/var/www/public:ro
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app

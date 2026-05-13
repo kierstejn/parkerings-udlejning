@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, router, usePage, useForm } from '@inertiajs/react';
 import { Camera, Car, MapPin, Plus, X } from 'lucide-react';
 import DashboardLayout from '../../../Layouts/DashboardLayout';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { FormField, inputCls, submitCls } from '../../../Components/ui/FormField';
+import { AddressAutocomplete } from '../../../Components/ui/AddressAutocomplete';
 
 export default function ParkingSpots() {
     const { spots } = usePage().props;
@@ -129,6 +130,7 @@ function SpotCard({ spot }) {
 
 function CreateForm({ onSuccess }) {
     const [processing, setProcessing] = useState(false);
+    const [addressConfirmed, setAddressConfirmed] = useState(false);
     const { errors } = usePage().props;
 
     const { data, setData, reset } = useForm({
@@ -137,9 +139,10 @@ function CreateForm({ onSuccess }) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        if (!addressConfirmed) return;
         setProcessing(true);
         router.post('/landlord/parking-spots', data, {
-            onSuccess: () => { reset(); onSuccess(); },
+            onSuccess: () => { reset(); setAddressConfirmed(false); onSuccess(); },
             onFinish: () => setProcessing(false),
         });
     }
@@ -147,6 +150,7 @@ function CreateForm({ onSuccess }) {
     return (
         <SpotForm
             data={data} setData={setData} errors={errors} processing={processing}
+            addressConfirmed={addressConfirmed} setAddressConfirmed={setAddressConfirmed}
             onSubmit={handleSubmit} submitLabelKey="spots.form.create_btn"
         />
     );
@@ -154,6 +158,7 @@ function CreateForm({ onSuccess }) {
 
 export function EditForm({ spot, onSuccess }) {
     const [processing, setProcessing] = useState(false);
+    const [addressConfirmed, setAddressConfirmed] = useState(true);
     const { errors } = usePage().props;
 
     const { data, setData } = useForm({
@@ -163,6 +168,7 @@ export function EditForm({ spot, onSuccess }) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        if (!addressConfirmed) return;
         setProcessing(true);
         router.post(`/landlord/parking-spots/${spot.id}`, data, {
             onSuccess: () => { if (onSuccess) onSuccess(); },
@@ -173,12 +179,13 @@ export function EditForm({ spot, onSuccess }) {
     return (
         <SpotForm
             data={data} setData={setData} errors={errors} processing={processing}
+            addressConfirmed={addressConfirmed} setAddressConfirmed={setAddressConfirmed}
             onSubmit={handleSubmit} submitLabelKey="spots.form.save_btn"
         />
     );
 }
 
-function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey }) {
+function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey, addressConfirmed, setAddressConfirmed }) {
     const { t } = useLanguage();
 
     return (
@@ -190,8 +197,18 @@ function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey 
                 </FormField>
 
                 <FormField label={t('spots.form.address')} className="col-span-2">
-                    <input type="text" required value={data.address} onChange={(e) => setData('address', e.target.value)} placeholder="Østerbrogade 124, 2100 København Ø" className={inputCls} />
+                    <AddressAutocomplete
+                        value={data.address}
+                        placeholder="Østerbrogade 124, 2100 København Ø"
+                        className={inputCls}
+                        required
+                        onChange={(text) => { setData('address', text); setAddressConfirmed(false); }}
+                        onSelect={(item) => { setData('address', item.label); setAddressConfirmed(true); }}
+                    />
                     {errors.address && <p className="text-xs text-error mt-1">{errors.address}</p>}
+                    {data.address && !addressConfirmed && (
+                        <p className="text-xs text-body mt-1 italic">{t('spots.form.address_select_hint')}</p>
+                    )}
                 </FormField>
 
                 <FormField label={t('spots.form.type')}>
@@ -216,7 +233,7 @@ function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey 
                 </FormField>
             </div>
 
-            <button type="submit" disabled={processing} className={submitCls}>
+            <button type="submit" disabled={processing || !addressConfirmed} className={submitCls}>
                 {processing ? t('spots.form.saving') : t(submitLabelKey)}
             </button>
         </form>

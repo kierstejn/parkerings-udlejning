@@ -3,6 +3,8 @@ export default {
     'nav.how_it_works':    'How it works',
     'nav.available_spots': 'Available spots',
     'nav.list_spot':       'List your spot',
+    'nav.open_menu':       'Open menu',
+    'nav.close_menu':      'Close menu',
 
     // ── Header auth ───────────────────────────────────
     'header.my_account': 'My account',
@@ -33,6 +35,8 @@ export default {
 
     // ── Listings ──────────────────────────────────────
     'listings.title':           'Available spots',
+    'listings.nearby_title':    'Spots near you',
+    'listings.none_nearby':     'No available spots found nearby.',
     'listings.see_all':         'See all →',
     'listings.taken':           'Taken',
     'listings.sample1_title':   'Carport in Østerbro',
@@ -90,7 +94,8 @@ export default {
     'register.log_in':            'Log in',
 
     // ── Dashboard layout ──────────────────────────────
-    'dashboard.log_out': 'Log out',
+    'dashboard.log_out':    'Log out',
+    'dashboard.open_menu':  'Open navigation',
 
     // ── Sidebar ───────────────────────────────────────
     'sidebar.tenant':         'Tenant',
@@ -130,6 +135,20 @@ export default {
     'landlord.verifying':      'Verifying…',
     'landlord.verify_btn':     'Verify with MitID',
 
+    // ── Browse spots page ─────────────────────────────
+    'spots.browse.title':        'Available spots',
+    'spots.browse.filters':      'Filters',
+    'spots.browse.type_all':     'All types',
+    'spots.browse.address_label':'Address',
+    'spots.browse.use_location': 'Use my location',
+    'spots.browse.apply':        'Search',
+    'spots.browse.results':      'spots',
+    'spots.browse.load_more':    'Load more',
+    'spots.browse.map_stub':     'Map view is not available yet',
+    'spots.browse.no_results':   'No spots found',
+    'spots.browse.list_view':    'List view',
+    'spots.browse.map_view':     'Map view',
+
     // ── Parking spots page ────────────────────────────
     'spots.title':              'Parking spots',
     'spots.add_new':            'Add new',
@@ -140,7 +159,7 @@ export default {
     'spots.form.title':         'Title',
     'spots.form.title_ph':      'Carport in Østerbro',
     'spots.form.address':             'Address',
-    'spots.form.address_select_hint': 'Please select an address from the suggestions',
+    'spots.form.address_select_hint': 'Select a specific address with a house number from the list',
     'spots.form.type':          'Type',
     'spots.form.size':          'Size',
     'spots.form.price':         'Price',
@@ -153,6 +172,8 @@ export default {
     'spots.form.per_hour':      'Per hour',
     'spots.form.per_day':       'Per day',
     'spots.form.per_month':     'Per month',
+    'spots.type.carport':       'Carport',
+    'spots.type.garage':        'Garage',
     'spots.type.outdoor':       'Outdoor',
     'spots.type.indoor':        'Indoor',
     'spots.size.compact':       'Compact',
@@ -223,4 +244,15 @@ export default {
     'spots.avail.confirm_delete_body'   : 'Are you sure you want to delete this availability? This cannot be undone.',
     'spots.avail.confirm_delete'        : 'Delete',
     'spots.avail.confirm_cancel'        : 'Cancel',
+
+    // ── Public spot detail ────────────────────────────
+    'spot.back':           'All spots',
+    'spot.description':    'Description',
+    'spot.availability':   'Availability',
+    'spot.no_availability':'No availability at the moment',
+    'spot.book':           'Book this spot',
+    'spot.login_to_book':  'Log in to book',
+    'spot.period':         'Period',
+    'spot.price':          'Price',
+    'spot.kr_suffix':      'kr.',
 };

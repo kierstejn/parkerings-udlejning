@@ -28,7 +28,7 @@ export default function Bookings() {
                         {t('bookings.empty_body')}
                     </p>
                     <Link
-                        href="/"
+                        href="/spots"
                         className="px-6 py-3 bg-primary text-page text-xs font-semibold tracking-widest uppercase hover:bg-primary-hover transition-colors font-display"
                     >
                         {t('bookings.find_spot')}

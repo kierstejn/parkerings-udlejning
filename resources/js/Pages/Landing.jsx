@@ -1,18 +1,26 @@
+import { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
-import { MapPin, Clock, Shield, ChevronRight, Car, Key } from 'lucide-react';
-import HeaderAuth from '../Components/HeaderAuth';
+import { MapPin, Clock, Shield, ChevronRight, Car, Key, Camera } from 'lucide-react';
+import AppHeader from '../Components/AppHeader';
 import SearchForm from '../Components/SearchForm';
 import { useLanguage } from '../contexts/LanguageContext';
 
+const LANDING_NAV = [
+    { labelKey: 'nav.how_it_works',   href: '#how' },
+    { labelKey: 'nav.available_spots', href: '#listings' },
+    { labelKey: 'nav.list_spot',       href: '#landlord' },
+];
+
 export default function Landing() {
     const { t } = useLanguage();
+    const [nearbySpots, setNearbySpots] = useState([]);
 
-    const listings = [
-        { id: 1, titleKey: 'listings.sample1_title', address: 'Østerbrogade 124, 2100 Kbh Ø',              price: 18,  unitKey: 'listings.unit_hour',  sizeKey: 'listings.size_standard', available: true  },
-        { id: 2, titleKey: 'listings.sample2_title', address: 'Nørrebrogade 47, 2200 Kbh N',               price: 850, unitKey: 'listings.unit_month', sizeKey: 'listings.size_large',    available: true  },
-        { id: 3, titleKey: 'listings.sample3_title', address: 'Amagerbrogade 18, 2300 Kbh S',              price: 25,  unitKey: 'listings.unit_hour',  sizeKey: 'listings.size_standard', available: false },
-        { id: 4, titleKey: 'listings.sample4_title', address: 'Frederiksberg Allé 88, 2000 Frederiksberg', price: 650, unitKey: 'listings.unit_month', sizeKey: 'listings.size_compact',  available: true  },
-    ];
+    useEffect(() => {
+        fetch('/api/spots/nearby')
+            .then((r) => r.json())
+            .then((data) => setNearbySpots(data))
+            .catch(() => {});
+    }, []);
 
     const steps = [
         { num: '01', titleKey: 'how.step1_title', icon: MapPin, descKey: 'how.step1_desc' },
@@ -23,43 +31,7 @@ export default function Landing() {
     return (
         <div className="min-h-screen bg-[oklch(0.965_0.008_85)]" style={{ fontFamily: 'var(--font-body)' }}>
 
-            {/* ── Header ─────────────────────────────────────── */}
-            <header className="sticky top-0 z-50 bg-[oklch(0.965_0.008_85_/_95%)] backdrop-blur-sm border-b border-[oklch(0.88_0.015_85)]">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2.5">
-                        <div
-                            className="w-8 h-8 bg-[oklch(0.22_0.04_255)] flex items-center justify-center text-[oklch(0.72_0.14_75)]"
-                            style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1rem' }}
-                        >
-                            P
-                        </div>
-                        <span
-                            className="text-[oklch(0.18_0.03_255)]"
-                            style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '0.06em', textTransform: 'uppercase' }}
-                        >
-                            ParkDel
-                        </span>
-                    </Link>
-
-                    <nav className="hidden md:flex items-center gap-8">
-                        {[
-                            { labelKey: 'nav.how_it_works', href: '#how' },
-                            { labelKey: 'nav.available_spots', href: '#listings' },
-                            { labelKey: 'nav.list_spot',  href: '#landlord' },
-                        ].map(({ labelKey, href }) => (
-                            <a
-                                key={href}
-                                href={href}
-                                className="text-sm text-[oklch(0.50_0.025_255)] hover:text-[oklch(0.18_0.03_255)] transition-colors font-medium"
-                            >
-                                {t(labelKey)}
-                            </a>
-                        ))}
-                    </nav>
-
-                    <HeaderAuth />
-                </div>
-            </header>
+            <AppHeader navLinks={LANDING_NAV} />
 
             {/* ── Hero ───────────────────────────────────────── */}
             <section className="relative bg-[oklch(0.22_0.04_255)] overflow-hidden">
@@ -158,7 +130,7 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* ── Featured listings ──────────────────────────── */}
+            {/* ── Nearby / Featured listings ──────────────────── */}
             <section id="listings" className="py-24 bg-[oklch(0.945_0.01_85)]">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="flex items-end justify-between mb-12">
@@ -166,51 +138,61 @@ export default function Landing() {
                             className="text-[oklch(0.18_0.03_255)] uppercase"
                             style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, letterSpacing: '-0.02em' }}
                         >
-                            {t('listings.title')}
+                            {nearbySpots.length > 0 ? t('listings.nearby_title') : t('listings.title')}
                         </h2>
-                        <a href="#" className="text-sm text-[oklch(0.22_0.04_255)] font-medium underline underline-offset-4 hover:text-[oklch(0.50_0.025_255)] transition-colors hidden sm:block">
+                        <Link
+                            href="/spots"
+                            className="shrink-0 text-sm font-semibold text-[oklch(0.50_0.025_255)] hover:text-[oklch(0.18_0.03_255)] transition-colors"
+                            style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}
+                        >
                             {t('listings.see_all')}
-                        </a>
+                        </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {listings.map((listing) => (
-                            <article key={listing.id} className="bg-[oklch(0.992_0.004_85)] hover:shadow-md transition-shadow cursor-pointer group">
-                                <div className="h-36 bg-[oklch(0.30_0.035_255)] flex items-center justify-center relative overflow-hidden">
-                                    <Car className="w-10 h-10 text-[oklch(0.45_0.03_255)] group-hover:scale-110 transition-transform duration-300" strokeWidth={1} />
-                                    {!listing.available && (
-                                        <div className="absolute inset-0 bg-[oklch(0.16_0.02_255_/_80%)] flex items-center justify-center">
-                                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em' }} className="text-[oklch(0.78_0.06_30)]">
-                                                {t('listings.taken')}
-                                            </span>
+                    {nearbySpots.length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {nearbySpots.map((spot) => {
+                                const primary = spot.images?.[0];
+                                return (
+                                    <article key={spot.id} className="bg-[oklch(0.992_0.004_85)] hover:shadow-md transition-shadow cursor-pointer group">
+                                        <div className="h-36 bg-[oklch(0.30_0.035_255)] flex items-center justify-center relative overflow-hidden">
+                                            {primary ? (
+                                                <img src={primary.url} alt={spot.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                            ) : (
+                                                <Car className="w-10 h-10 text-[oklch(0.45_0.03_255)]" strokeWidth={1} />
+                                            )}
+                                            <div
+                                                className="absolute top-2.5 right-2.5 bg-[oklch(0.72_0.14_75)] px-2 py-0.5 text-[oklch(0.18_0.03_255)]"
+                                                style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}
+                                            >
+                                                {t(`spots.size.${spot.size}`)}
+                                            </div>
+                                            {primary && spot.images.length > 1 && (
+                                                <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-0.5 bg-[oklch(0.12_0.02_255_/_70%)] text-[oklch(0.97_0.006_85)] text-[10px]">
+                                                    <Camera className="w-2.5 h-2.5" />
+                                                    {spot.images.length}
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                    <div
-                                        className="absolute top-2.5 right-2.5 bg-[oklch(0.72_0.14_75)] px-2 py-0.5 text-[oklch(0.18_0.03_255)]"
-                                        style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}
-                                    >
-                                        {t(listing.sizeKey)}
-                                    </div>
-                                </div>
-                                <div className="p-4">
-                                    <h3 className="text-[oklch(0.18_0.03_255)] font-semibold mb-1 text-sm truncate">{t(listing.titleKey)}</h3>
-                                    <div className="flex items-center gap-1 text-[oklch(0.55_0.02_255)] text-xs mb-3">
-                                        <MapPin className="w-3 h-3 shrink-0" />
-                                        <span className="truncate">{listing.address}</span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 800 }} className="text-[oklch(0.18_0.03_255)]">
-                                                {listing.price} kr
-                                            </span>
-                                            <span className="text-[oklch(0.55_0.02_255)] text-xs ml-1">/{t(listing.unitKey)}</span>
+                                        <div className="p-4">
+                                            <h3 className="text-[oklch(0.18_0.03_255)] font-semibold mb-1 text-sm truncate">{spot.title}</h3>
+                                            <div className="flex items-center gap-1 text-[oklch(0.55_0.02_255)] text-xs">
+                                                <MapPin className="w-3 h-3 shrink-0" />
+                                                <span className="truncate">{spot.address}</span>
+                                            </div>
                                         </div>
-                                        <div className={`w-2 h-2 rounded-full ${listing.available ? 'bg-[oklch(0.65_0.17_145)]' : 'bg-[oklch(0.60_0.14_30)]'}`} />
-                                    </div>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
+                                    </article>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {nearbySpots.length === 0 && (
+                        <div className="flex flex-col items-center py-16 text-center">
+                            <Car className="w-10 h-10 text-[oklch(0.78_0.015_85)] mb-4" strokeWidth={1} />
+                            <p className="text-[oklch(0.50_0.025_255)] text-sm">{t('listings.none_nearby')}</p>
+                        </div>
+                    )}
                 </div>
             </section>
 

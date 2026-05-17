@@ -3,6 +3,8 @@ export default {
     'nav.how_it_works':    'Sådan virker det',
     'nav.available_spots': 'Ledige pladser',
     'nav.list_spot':       'Udlej din plads',
+    'nav.open_menu':       'Åbn menu',
+    'nav.close_menu':      'Luk menu',
 
     // ── Header auth ───────────────────────────────────
     'header.my_account': 'Min side',
@@ -33,6 +35,8 @@ export default {
 
     // ── Listings ──────────────────────────────────────
     'listings.title':           'Ledige pladser',
+    'listings.nearby_title':    'Pladser nær dig',
+    'listings.none_nearby':     'Ingen ledige pladser fundet i nærheden.',
     'listings.see_all':         'Se alle →',
     'listings.taken':           'Optaget',
     'listings.sample1_title':   'Carport i Østerbro',
@@ -90,7 +94,8 @@ export default {
     'register.log_in':            'Log ind',
 
     // ── Dashboard layout ──────────────────────────────
-    'dashboard.log_out': 'Log ud',
+    'dashboard.log_out':    'Log ud',
+    'dashboard.open_menu':  'Åbn navigation',
 
     // ── Sidebar ───────────────────────────────────────
     'sidebar.tenant':        'Lejer',
@@ -130,6 +135,20 @@ export default {
     'landlord.verifying':      'Verificerer…',
     'landlord.verify_btn':     'Verificér med MitID',
 
+    // ── Browse spots page ─────────────────────────────
+    'spots.browse.title':        'Ledige pladser',
+    'spots.browse.filters':      'Filtre',
+    'spots.browse.type_all':     'Alle typer',
+    'spots.browse.address_label':'Adresse',
+    'spots.browse.use_location': 'Brug min placering',
+    'spots.browse.apply':        'Søg',
+    'spots.browse.results':      'pladser',
+    'spots.browse.load_more':    'Indlæs flere',
+    'spots.browse.map_stub':     'Kortvisning er ikke tilgængelig endnu',
+    'spots.browse.no_results':   'Ingen pladser fundet',
+    'spots.browse.list_view':    'Listevisning',
+    'spots.browse.map_view':     'Kortvisning',
+
     // ── Parking spots page ────────────────────────────
     'spots.title':              'Parkeringspladser',
     'spots.add_new':            'Opret ny',
@@ -140,7 +159,7 @@ export default {
     'spots.form.title':         'Titel',
     'spots.form.title_ph':      'Carport i Østerbro',
     'spots.form.address':             'Adresse',
-    'spots.form.address_select_hint': 'Vælg en adresse fra forslagslisten',
+    'spots.form.address_select_hint': 'Vælg en præcis adresse med vejnummer fra listen',
     'spots.form.type':          'Type',
     'spots.form.size':          'Størrelse',
     'spots.form.price':         'Pris',
@@ -153,6 +172,8 @@ export default {
     'spots.form.per_hour':      'Per time',
     'spots.form.per_day':       'Per dag',
     'spots.form.per_month':     'Per måned',
+    'spots.type.carport':       'Carport',
+    'spots.type.garage':        'Garage',
     'spots.type.outdoor':       'Udendørs',
     'spots.type.indoor':        'Indendørs',
     'spots.size.compact':       'Kompakt',
@@ -223,4 +244,15 @@ export default {
     'spots.avail.confirm_delete_body'   : 'Er du sikker på, at du vil slette denne tilgængelighed? Dette kan ikke fortrydes.',
     'spots.avail.confirm_delete'        : 'Slet',
     'spots.avail.confirm_cancel'        : 'Annuller',
+
+    // ── Public spot detail ────────────────────────────
+    'spot.back':           'Alle pladser',
+    'spot.description':    'Beskrivelse',
+    'spot.availability':   'Tilgængelighed',
+    'spot.no_availability':'Ingen tilgængelighed i øjeblikket',
+    'spot.book':           'Book pladsen',
+    'spot.login_to_book':  'Log ind for at booke',
+    'spot.period':         'Periode',
+    'spot.price':          'Pris',
+    'spot.kr_suffix':      'kr.',
 };

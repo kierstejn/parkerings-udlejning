@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 
 class ParkingSpotController extends Controller
 {
+    public function nearby(): \Illuminate\Http\JsonResponse
+    {
+        $spots = ParkingSpot::with('images')
+            ->latest()
+            ->get();
+
+        return response()->json($spots);
+    }
+
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $spots = $request->user()->parkingSpots()->latest()->get();

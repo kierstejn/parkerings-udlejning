@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { MapPin, Loader } from 'lucide-react';
+import { getCoords } from '../../lib/geolocation';
 
 const API_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
 
@@ -12,18 +13,26 @@ export function AddressAutocomplete({
     className = '',
     containerClassName = '',
     required = false,
+    requireHouseNumber = false,
     inputRef: externalRef,
 }) {
-    const [suggestions, setSuggestions] = useState([]);
-    const [loading, setLoading]         = useState(false);
-    const [open, setOpen]               = useState(false);
-    const [activeIndex, setActiveIndex] = useState(-1);
+    const [suggestions, setSuggestions]   = useState([]);
+    const [loading, setLoading]           = useState(false);
+    const [open, setOpen]                 = useState(false);
+    const [activeIndex, setActiveIndex]   = useState(-1);
     const [dropdownRect, setDropdownRect] = useState(null);
 
     const containerRef = useRef(null);
     const internalRef  = useRef(null);
     const inputEl      = externalRef ?? internalRef;
     const timerRef     = useRef(null);
+    const coordsRef    = useRef(null); // { lat, lng } once geolocation resolves
+
+    // Warm up geolocation via the shared cache — if another component already
+    // requested it, this resolves instantly from the module-level cache.
+    useEffect(() => {
+        getCoords().then((c) => { coordsRef.current = c; });
+    }, []);
 
     const fetchSuggestions = useCallback(async (text) => {
         if (!API_KEY || text.length < 3) {
@@ -33,13 +42,19 @@ export function AddressAutocomplete({
         }
         setLoading(true);
         try {
-            const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(text)}&filter=countrycode:dk&bias=countrycode:dk&limit=5&apiKey=${API_KEY}`;
+            const bias = coordsRef.current
+                ? `proximity:${coordsRef.current.lng},${coordsRef.current.lat}`
+                : 'countrycode:dk';
+
+            const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(text)}&filter=countrycode:dk&bias=${bias}&limit=5&apiKey=${API_KEY}`;
             const res  = await fetch(url);
             const data = await res.json();
-            const results = (data.features ?? []).map((f) => ({
-                label: f.properties.formatted,
-                place: f.properties,
-            }));
+            const results = (data.features ?? [])
+                .filter((f) => !requireHouseNumber || f.properties.housenumber)
+                .map((f) => ({
+                    label: f.properties.formatted,
+                    place: f.properties,
+                }));
             setSuggestions(results);
             setOpen(results.length > 0);
         } catch {
@@ -47,7 +62,7 @@ export function AddressAutocomplete({
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [requireHouseNumber]);
 
     // Recompute dropdown anchor whenever it opens or the window resizes/scrolls
     useEffect(() => {

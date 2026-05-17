@@ -1,12 +1,16 @@
+import { useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 import DashboardLayout from '../../../Layouts/DashboardLayout';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { EditForm } from './ParkingSpots';
+import { getCoords } from '../../../lib/geolocation';
 
 export default function ParkingSpotEdit() {
     const { spot } = usePage().props;
     const { t } = useLanguage();
+
+    useEffect(() => { getCoords(); }, []);
 
     return (
         <DashboardLayout>

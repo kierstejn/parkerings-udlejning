@@ -38,8 +38,8 @@ export default function ParkingSpotDetail() {
                     href="/landlord/parking-spots"
                     className="flex items-center gap-1.5 text-xs font-semibold text-muted hover:text-ink uppercase tracking-widest transition-colors font-display"
                 >
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                    {t('spots.detail.back')}
+                    <ArrowLeft className="w-3.5 h-3.5 shrink-0" />
+                    <span className="hidden sm:inline">{t('spots.detail.back')}</span>
                 </Link>
                 <div className="flex items-center gap-2">
                     <Link
@@ -95,11 +95,29 @@ export default function ParkingSpotDetail() {
                         )}
                     </div>
 
-                    {/* ── Two-column: side nav + content ──── */}
+                    {/* ── Mobile: horizontal tab strip ────── */}
+                    <div className="flex md:hidden border-b border-line mb-6 -mx-4 px-4">
+                        {SECTIONS.map((s) => (
+                            <button
+                                key={s}
+                                onClick={() => setActiveSection(s)}
+                                className={[
+                                    'flex-1 py-2.5 text-[10px] font-semibold uppercase tracking-widest transition-colors font-display border-b-2 -mb-px',
+                                    activeSection === s
+                                        ? 'border-primary text-primary'
+                                        : 'border-transparent text-muted hover:text-ink',
+                                ].join(' ')}
+                            >
+                                {t(`spots.detail.section.${s}`)}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* ── Desktop: two-column side nav + content ── */}
                     <div className="flex gap-10 items-start">
 
-                        {/* Sticky section nav */}
-                        <nav className="w-36 shrink-0 sticky top-20">
+                        {/* Sticky section nav (desktop only) */}
+                        <nav className="hidden md:flex flex-col w-36 shrink-0 sticky top-20">
                             {SECTIONS.map((s) => (
                                 <button
                                     key={s}
@@ -187,7 +205,7 @@ function MediaSection({ spot }) {
             {images.length === 0 && previews.length === 0 ? (
                 <EmptyState icon={ImageIcon} label={t('spots.media.empty')} />
             ) : (
-                <div className="grid grid-cols-4 gap-2 mb-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-4">
                     {images.map((img) => (
                         <div key={img.id} className="relative group aspect-square bg-well overflow-hidden">
                             <img src={img.url} alt="" className="w-full h-full object-cover" />
@@ -261,11 +279,11 @@ function AvailabilitySection({ spot, onOpenForm }) {
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex flex-wrap gap-3 items-start mb-5">
                 <FilterTabs tabs={AVAIL_TABS} active={filter} onChange={setFilter} prefix="spots.avail.filter" counts={buckets} />
                 <button
                     onClick={onOpenForm}
-                    className="flex items-center gap-2 px-3 py-2 bg-primary text-page text-xs font-semibold tracking-widest uppercase hover:bg-primary-hover transition-colors shrink-0 font-display"
+                    className="flex items-center gap-2 px-3 py-2 bg-primary text-page text-xs font-semibold tracking-widest uppercase hover:bg-primary-hover transition-colors shrink-0 font-display ml-auto"
                 >
                     <CalendarPlus className="w-3 h-3" />
                     {t('spots.detail.add_availability')}

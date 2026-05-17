@@ -8,6 +8,8 @@ Route::get('/test', function () {
     return 'test';
 });
 
+Route::get('spots/nearby', [ParkingSpotController::class, 'nearby']);
+
 Route::post('register', [UserAuthController::class, 'register']);
 
 Route::group(['prefix' => 'auth'], function () {

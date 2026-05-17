@@ -69,6 +69,8 @@ class LandlordController extends Controller
             'type'        => 'required|in:carport,garage,outdoor,indoor',
             'size'        => 'required|in:compact,standard,large',
             'description' => 'nullable|string|max:2000',
+            'lat'         => 'nullable|numeric',
+            'lng'         => 'nullable|numeric',
         ]);
 
         $request->user()->parkingSpots()->create($data);
@@ -87,6 +89,8 @@ class LandlordController extends Controller
             'type'        => 'required|in:carport,garage,outdoor,indoor',
             'size'        => 'required|in:compact,standard,large',
             'description' => 'nullable|string|max:2000',
+            'lat'         => 'nullable|numeric',
+            'lng'         => 'nullable|numeric',
         ]);
 
         $spot->update($data);

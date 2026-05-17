@@ -18,6 +18,8 @@ class ParkingSpot extends Model
         'type',
         'size',
         'description',
+        'lat',
+        'lng',
         'is_active',
     ];
 
@@ -25,6 +27,8 @@ class ParkingSpot extends Model
     {
         return [
             'is_active' => 'boolean',
+            'lat'       => 'float',
+            'lng'       => 'float',
         ];
     }
 

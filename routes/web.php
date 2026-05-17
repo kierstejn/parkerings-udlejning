@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\LandlordController;
 use App\Http\Controllers\Web\SocialiteController;
+use App\Http\Controllers\Web\SpotController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +19,8 @@ if (app()->environment('testing')) {
 
 // ── Public ────────────────────────────────────────────────
 Route::get('/', fn () => Inertia::render('Landing'))->name('home');
+Route::get('/spots', [SpotController::class, 'index'])->name('spots.index');
+Route::get('/spots/{spot}', [SpotController::class, 'show'])->name('spots.show');
 
 // ── Auth (guests only) ────────────────────────────────────
 Route::middleware('guest')->group(function () {

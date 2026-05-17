@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('type');
             $table->string('size');
             $table->text('description')->nullable();
+            $table->decimal('lat', 10, 7)->nullable();
+            $table->decimal('lng', 10, 7)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

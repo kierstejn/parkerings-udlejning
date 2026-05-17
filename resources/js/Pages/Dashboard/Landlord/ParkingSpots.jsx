@@ -1,15 +1,20 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, router, usePage, useForm } from '@inertiajs/react';
 import { Camera, Car, MapPin, Plus, X } from 'lucide-react';
 import DashboardLayout from '../../../Layouts/DashboardLayout';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { FormField, inputCls, submitCls } from '../../../Components/ui/FormField';
 import { AddressAutocomplete } from '../../../Components/ui/AddressAutocomplete';
+import { getCoords } from '../../../lib/geolocation';
 
 export default function ParkingSpots() {
     const { spots } = usePage().props;
     const { t } = useLanguage();
     const [showForm, setShowForm] = useState(false);
+
+    // Warm up geolocation cache as soon as this page loads so coordinates
+    // are ready by the time the user opens the create form and starts typing.
+    useEffect(() => { getCoords(); }, []);
 
     function openCreate() { setShowForm(true); }
     function closeAll() { setShowForm(false); }
@@ -27,10 +32,10 @@ export default function ParkingSpots() {
                     {!showForm && (
                         <button
                             onClick={openCreate}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-page text-xs font-semibold tracking-widest uppercase hover:bg-primary-hover transition-colors font-display"
+                            aria-label={t('spots.add_new')}
+                            className="flex items-center justify-center w-9 h-9 bg-primary text-page hover:bg-primary-hover transition-colors shrink-0"
                         >
-                            <Plus className="w-3.5 h-3.5" />
-                            {t('spots.add_new')}
+                            <Plus className="w-4 h-4" />
                         </button>
                     )}
                 </div>
@@ -134,7 +139,7 @@ function CreateForm({ onSuccess }) {
     const { errors } = usePage().props;
 
     const { data, setData, reset } = useForm({
-        title: '', address: '', type: 'carport', size: 'standard', description: '',
+        title: '', address: '', type: 'carport', size: 'standard', description: '', lat: null, lng: null,
     });
 
     function handleSubmit(e) {
@@ -163,7 +168,7 @@ export function EditForm({ spot, onSuccess }) {
 
     const { data, setData } = useForm({
         title: spot.title, address: spot.address, type: spot.type,
-        size: spot.size, description: spot.description ?? '',
+        size: spot.size, description: spot.description ?? '', lat: spot.lat ?? null, lng: spot.lng ?? null,
     });
 
     function handleSubmit(e) {
@@ -202,8 +207,12 @@ function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey,
                         placeholder="Østerbrogade 124, 2100 København Ø"
                         className={inputCls}
                         required
+                        requireHouseNumber
                         onChange={(text) => { setData('address', text); setAddressConfirmed(false); }}
-                        onSelect={(item) => { setData('address', item.label); setAddressConfirmed(true); }}
+                        onSelect={(item) => {
+                            setData({ ...data, address: item.label, lat: item.place.lat ?? null, lng: item.place.lon ?? null });
+                            setAddressConfirmed(true);
+                        }}
                     />
                     {errors.address && <p className="text-xs text-error mt-1">{errors.address}</p>}
                     {data.address && !addressConfirmed && (

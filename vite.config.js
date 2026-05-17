@@ -27,5 +27,8 @@ export default defineConfig({
             host: 'localhost',
             protocol: tls ? 'wss' : 'ws',
         },
+        watch: {
+            usePolling: true,
+        },
     },
 });

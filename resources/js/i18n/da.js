@@ -140,7 +140,9 @@ export default {
     'spots.browse.filters':      'Filtre',
     'spots.browse.type_all':     'Alle typer',
     'spots.browse.address_label':'Adresse',
-    'spots.browse.use_location': 'Brug min placering',
+    'spots.browse.use_location':  'Brug min placering',
+    'spots.browse.clear_address': 'Ryd adresse',
+    'spots.browse.radius_label': 'Radius',
     'spots.browse.apply':        'Søg',
     'spots.browse.results':      'pladser',
     'spots.browse.load_more':    'Indlæs flere',
@@ -206,12 +208,14 @@ export default {
     'spots.media.uploading':    'Uploader…',
 
     // ── Availability filters ──────────────────────────
-    'spots.avail.filter.upcoming': 'Kommende',
     'spots.avail.filter.active':   'Aktive',
-    'spots.avail.filter.past':     'Tidligere',
-    'spots.avail.empty.upcoming':  'Ingen kommende tilgængelighed',
-    'spots.avail.empty.active':    'Ingen aktiv tilgængelighed',
-    'spots.avail.empty.past':      'Ingen tidligere tilgængelighed',
+    'spots.avail.filter.inactive': 'Inaktive',
+    'spots.avail.filter.previous': 'Tidligere',
+    'spots.avail.empty.active':    'Ingen aktive tilgængeligheder',
+    'spots.avail.empty.inactive':  'Ingen inaktive tilgængeligheder',
+    'spots.avail.empty.previous':  'Ingen tidligere tilgængeligheder',
+    'spots.avail.deactivate':      'Deaktiver',
+    'spots.avail.activate':        'Aktiver',
 
     // ── Rental filters ────────────────────────────────
     'spots.rental.filter.current':  'Igangværende',

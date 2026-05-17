@@ -140,7 +140,9 @@ export default {
     'spots.browse.filters':      'Filters',
     'spots.browse.type_all':     'All types',
     'spots.browse.address_label':'Address',
-    'spots.browse.use_location': 'Use my location',
+    'spots.browse.use_location':  'Use my location',
+    'spots.browse.clear_address': 'Clear address',
+    'spots.browse.radius_label': 'Radius',
     'spots.browse.apply':        'Search',
     'spots.browse.results':      'spots',
     'spots.browse.load_more':    'Load more',
@@ -206,12 +208,14 @@ export default {
     'spots.media.uploading':    'Uploading…',
 
     // ── Availability filters ──────────────────────────
-    'spots.avail.filter.upcoming': 'Upcoming',
     'spots.avail.filter.active':   'Active',
-    'spots.avail.filter.past':     'Past',
-    'spots.avail.empty.upcoming':  'No upcoming availability',
-    'spots.avail.empty.active':    'No active availability',
-    'spots.avail.empty.past':      'No past availability',
+    'spots.avail.filter.inactive': 'Inactive',
+    'spots.avail.filter.previous': 'Previous',
+    'spots.avail.empty.active':    'No active availabilities',
+    'spots.avail.empty.inactive':  'No inactive availabilities',
+    'spots.avail.empty.previous':  'No previous availabilities',
+    'spots.avail.deactivate':      'Deactivate',
+    'spots.avail.activate':        'Activate',
 
     // ── Rental filters ────────────────────────────────
     'spots.rental.filter.current':  'Current',

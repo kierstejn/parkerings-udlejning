@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\ParkingSpot;
+use App\Models\ParkingSpotAvailability;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -177,5 +178,101 @@ class LandlordParkingSpotTest extends TestCase
             ]);
 
         $response->assertSessionHasErrors('ends_at');
+    }
+
+    public function test_landlord_can_delete_availability(): void
+    {
+        $user  = $this->landlord();
+        $spot  = ParkingSpot::factory()->for($user)->create();
+        $avail = $spot->availabilities()->create([
+            'starts_at'    => '2027-06-01 00:00:00',
+            'ends_at'      => '2027-09-01 00:00:00',
+            'booking_type' => 'day',
+            'price'        => 100,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->delete("/landlord/parking-spots/availability/{$avail->id}");
+
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('parking_spot_availabilities', ['id' => $avail->id]);
+    }
+
+    public function test_landlord_cannot_delete_others_availability(): void
+    {
+        $owner = $this->landlord();
+        $other = $this->landlord();
+        $spot  = ParkingSpot::factory()->for($owner)->create();
+        $avail = $spot->availabilities()->create([
+            'starts_at'    => '2027-06-01 00:00:00',
+            'ends_at'      => '2027-09-01 00:00:00',
+            'booking_type' => 'day',
+            'price'        => 100,
+        ]);
+
+        $this->actingAs($other)
+            ->delete("/landlord/parking-spots/availability/{$avail->id}")
+            ->assertStatus(403);
+    }
+
+    public function test_landlord_can_deactivate_availability(): void
+    {
+        $user  = $this->landlord();
+        $spot  = ParkingSpot::factory()->for($user)->create();
+        $avail = $spot->availabilities()->create([
+            'starts_at'    => '2027-06-01 00:00:00',
+            'ends_at'      => '2027-09-01 00:00:00',
+            'booking_type' => 'day',
+            'price'        => 100,
+            'is_active'    => true,
+        ]);
+
+        $this->actingAs($user)
+            ->patch("/landlord/parking-spots/availability/{$avail->id}/toggle")
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('parking_spot_availabilities', [
+            'id'        => $avail->id,
+            'is_active' => false,
+        ]);
+    }
+
+    public function test_landlord_can_reactivate_availability(): void
+    {
+        $user  = $this->landlord();
+        $spot  = ParkingSpot::factory()->for($user)->create();
+        $avail = $spot->availabilities()->create([
+            'starts_at'    => '2027-06-01 00:00:00',
+            'ends_at'      => '2027-09-01 00:00:00',
+            'booking_type' => 'day',
+            'price'        => 100,
+            'is_active'    => false,
+        ]);
+
+        $this->actingAs($user)
+            ->patch("/landlord/parking-spots/availability/{$avail->id}/toggle")
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('parking_spot_availabilities', [
+            'id'        => $avail->id,
+            'is_active' => true,
+        ]);
+    }
+
+    public function test_landlord_cannot_toggle_others_availability(): void
+    {
+        $owner = $this->landlord();
+        $other = $this->landlord();
+        $spot  = ParkingSpot::factory()->for($owner)->create();
+        $avail = $spot->availabilities()->create([
+            'starts_at'    => '2027-06-01 00:00:00',
+            'ends_at'      => '2027-09-01 00:00:00',
+            'booking_type' => 'day',
+            'price'        => 100,
+        ]);
+
+        $this->actingAs($other)
+            ->patch("/landlord/parking-spots/availability/{$avail->id}/toggle")
+            ->assertStatus(403);
     }
 }

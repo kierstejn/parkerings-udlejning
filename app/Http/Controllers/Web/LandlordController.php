@@ -169,4 +169,13 @@ class LandlordController extends Controller
 
         return redirect()->back();
     }
+
+    public function toggleAvailability(Request $request, ParkingSpotAvailability $availability)
+    {
+        abort_if($availability->parkingSpot->user_id !== $request->user()->id, 403);
+
+        $availability->update(['is_active' => !$availability->is_active]);
+
+        return redirect()->back();
+    }
 }

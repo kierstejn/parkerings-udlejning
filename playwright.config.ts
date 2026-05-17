@@ -11,6 +11,12 @@ export default defineConfig({
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
     },
+    webServer: {
+        command: 'docker compose -f docker-compose.test.yml up --build',
+        url: 'http://localhost:9080/up',
+        reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
+    },
     projects: [
         {
             name: 'chromium',

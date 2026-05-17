@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, CalendarPlus, ChevronRight, ImageIcon, Pencil, Receipt, Trash2, X } from 'lucide-react';
+import { ArrowLeft, CalendarPlus, ChevronRight, Eye, EyeOff, ImageIcon, Pencil, Receipt, Trash2, X } from 'lucide-react';
 import DashboardLayout from '../../../Layouts/DashboardLayout';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { FormField, inputCls, submitCls } from '../../../Components/ui/FormField';
@@ -8,7 +8,7 @@ import { EmptyState } from '../../../Components/ui/EmptyState';
 import { ConfirmDialog } from '../../../Components/ui/ConfirmDialog';
 
 const SECTIONS    = ['availability', 'rentals', 'media'];
-const AVAIL_TABS  = ['upcoming', 'active', 'past'];
+const AVAIL_TABS  = ['active', 'inactive', 'previous'];
 const RENTAL_TABS = ['current', 'upcoming', 'past'];
 
 export default function ParkingSpotDetail() {
@@ -267,13 +267,14 @@ function MediaSection({ spot }) {
 
 function AvailabilitySection({ spot, onOpenForm }) {
     const { t } = useLanguage();
-    const [filter, setFilter] = useState('upcoming');
+    const [filter, setFilter] = useState('active');
     const now = new Date();
 
+    const all = spot.availabilities ?? [];
     const buckets = {
-        upcoming: (spot.availabilities ?? []).filter((a) => new Date(a.starts_at) > now),
-        active:   (spot.availabilities ?? []).filter((a) => new Date(a.starts_at) <= now && new Date(a.ends_at) >= now),
-        past:     (spot.availabilities ?? []).filter((a) => new Date(a.ends_at) < now),
+        active:   all.filter((a) =>  a.is_active && new Date(a.ends_at) >= now),
+        inactive: all.filter((a) => !a.is_active && new Date(a.ends_at) >= now),
+        previous: all.filter((a) => new Date(a.ends_at) < now),
     };
     const visible = buckets[filter];
 
@@ -383,6 +384,7 @@ function AvailabilityRow({ avail }) {
     const { t } = useLanguage();
     const locale = 'da-DK';
     const [confirming, setConfirming] = useState(false);
+    const isPrevious = new Date(avail.ends_at) < new Date();
 
     const fmt = (iso) => {
         const d = new Date(iso);
@@ -412,7 +414,7 @@ function AvailabilityRow({ avail }) {
                 }}
                 onCancel={() => setConfirming(false)}
             />
-            <div className="border border-line bg-card px-5 py-4 flex items-start justify-between gap-4">
+            <div className={`border border-line bg-card px-5 py-4 flex items-start justify-between gap-4 ${!avail.is_active ? 'opacity-50' : ''}`}>
                 <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className="px-1.5 py-0.5 bg-chip text-faint text-[10px] font-bold uppercase tracking-wide font-display">
@@ -436,12 +438,26 @@ function AvailabilityRow({ avail }) {
                         </p>
                     )}
                 </div>
-                <button
-                    onClick={() => setConfirming(true)}
-                    className="shrink-0 p-2 text-faint hover:text-error hover:bg-hover transition-colors"
-                >
-                    <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-1 shrink-0">
+                    {!isPrevious && (
+                        <button
+                            onClick={() => router.patch(`/landlord/parking-spots/availability/${avail.id}/toggle`, {}, { preserveScroll: true })}
+                            aria-label={avail.is_active ? t('spots.avail.deactivate') : t('spots.avail.activate')}
+                            className="p-2 text-faint hover:text-ink hover:bg-hover transition-colors"
+                        >
+                            {avail.is_active
+                                ? <EyeOff className="w-4 h-4" />
+                                : <Eye    className="w-4 h-4" />
+                            }
+                        </button>
+                    )}
+                    <button
+                        onClick={() => setConfirming(true)}
+                        className="p-2 text-faint hover:text-error hover:bg-hover transition-colors"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
         </>
     );

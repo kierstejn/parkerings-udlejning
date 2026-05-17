@@ -139,7 +139,7 @@ function CreateForm({ onSuccess }) {
     const { errors } = usePage().props;
 
     const { data, setData, reset } = useForm({
-        title: '', address: '', type: 'carport', size: 'standard', description: '', lat: null, lng: null,
+        title: '', address: '', type: 'outdoor', size: 'standard', description: '', lat: null, lng: null,
     });
 
     function handleSubmit(e) {
@@ -222,10 +222,10 @@ function SpotForm({ data, setData, errors, processing, onSubmit, submitLabelKey,
 
                 <FormField label={t('spots.form.type')}>
                     <select value={data.type} onChange={(e) => setData('type', e.target.value)} className={inputCls}>
-                        <option value="carport">Carport</option>
-                        <option value="garage">Garage</option>
                         <option value="outdoor">{t('spots.type.outdoor')}</option>
                         <option value="indoor">{t('spots.type.indoor')}</option>
+                        <option value="carport">Carport</option>
+                        <option value="garage">Garage</option>
                     </select>
                 </FormField>
 

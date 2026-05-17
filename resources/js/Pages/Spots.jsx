@@ -18,6 +18,7 @@ export default function Spots() {
     const [address, setAddress] = useState(initialFilters.address ?? '');
     const [lat, setLat]         = useState(initialFilters.lat     ?? null);
     const [lng, setLng]         = useState(initialFilters.lng     ?? null);
+    const [radius, setRadius]   = useState(Number(initialFilters.radius) || 15);
     const [locating, setLocating] = useState(false);
 
     // Results
@@ -36,10 +37,9 @@ export default function Spots() {
         } else {
             setAllSpots(pageProps.spots.data);
             // Sync filter inputs to reflect applied filters
-            setType(pageProps.filters?.type    ?? '');
-            setAddress(pageProps.filters?.address ?? '');
-            setLat(pageProps.filters?.lat     ?? null);
-            setLng(pageProps.filters?.lng     ?? null);
+            setType(pageProps.filters?.type ?? '');
+            setLat(pageProps.filters?.lat  ?? null);
+            setLng(pageProps.filters?.lng  ?? null);
         }
         setNextCursor(pageProps.spots.next_cursor ?? null);
         loadingMoreRef.current = false;
@@ -48,11 +48,16 @@ export default function Spots() {
     function applyFilters() {
         setSidebarOpen(false);
         const params = {};
-        if (type)    params.type    = type;
-        if (address) params.address = address;
-        if (lat)     params.lat     = lat;
-        if (lng)     params.lng     = lng;
-        router.get('/spots', params);
+        if (type) params.type = type;
+        if (lat && lng) {
+            params.lat    = lat;
+            params.lng    = lng;
+            params.radius = radius;
+        } else if (address) {
+            params.address = address;
+            params.radius  = radius;
+        }
+        router.get('/spots', params, { preserveState: true });
     }
 
     function loadMore() {
@@ -62,6 +67,7 @@ export default function Spots() {
         if (pageProps.filters?.address) params.address = pageProps.filters.address;
         if (pageProps.filters?.lat)     params.lat     = pageProps.filters.lat;
         if (pageProps.filters?.lng)     params.lng     = pageProps.filters.lng;
+        if (pageProps.filters?.radius)  params.radius  = pageProps.filters.radius;
         router.get('/spots', params, {
             preserveState:  true,
             preserveScroll: true,
@@ -86,7 +92,9 @@ export default function Spots() {
             const data    = await res.json();
             const feature = data.features?.[0];
             if (feature) {
-                setAddress(feature.properties.city ?? feature.properties.formatted ?? '');
+                const p = feature.properties;
+                const street = [p.street, p.housenumber].filter(Boolean).join(' ');
+                setAddress(street ? `${street}, ${p.city ?? p.formatted}` : (p.formatted ?? ''));
             }
         } catch {
             // user denied or timed out — silently ignore
@@ -112,7 +120,7 @@ export default function Spots() {
 
             <FilterSection label={t('spots.browse.address_label')}>
                 <div className="flex gap-2 items-start">
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 relative">
                         <AddressAutocomplete
                             value={address}
                             onChange={(text) => { setAddress(text); setLat(null); setLng(null); }}
@@ -122,8 +130,18 @@ export default function Spots() {
                                 setLng(item.place.lon ?? null);
                             }}
                             placeholder={t('search.placeholder')}
-                            className="w-full px-3 py-2.5 bg-card border border-line text-sm text-ink placeholder:text-ghost focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
+                            className={`w-full px-3 py-2.5 bg-card border border-line text-sm text-ink placeholder:text-ghost focus:outline-none focus:ring-2 focus:ring-primary transition-shadow ${address ? 'pr-8' : ''}`}
                         />
+                        {address && (
+                            <button
+                                type="button"
+                                onClick={() => { setAddress(''); setLat(null); setLng(null); }}
+                                aria-label={t('spots.browse.clear_address')}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-ghost hover:text-ink transition-colors"
+                            >
+                                <X className="w-3.5 h-3.5" />
+                            </button>
+                        )}
                     </div>
                     <button
                         type="button"
@@ -134,6 +152,23 @@ export default function Spots() {
                     >
                         <LocateFixed className={`w-4 h-4 ${locating ? 'animate-pulse' : ''}`} strokeWidth={1.5} />
                     </button>
+                </div>
+            </FilterSection>
+
+            <FilterSection label={`${t('spots.browse.radius_label')}: ${radius} km`}>
+                <input
+                    type="range"
+                    min={1}
+                    max={50}
+                    step={1}
+                    value={radius}
+                    onChange={(e) => setRadius(Number(e.target.value))}
+                    disabled={!address && !lat}
+                    className="w-full accent-primary disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+                />
+                <div className="flex justify-between text-[10px] text-ghost mt-1 select-none">
+                    <span>1 km</span>
+                    <span>50 km</span>
                 </div>
             </FilterSection>
 

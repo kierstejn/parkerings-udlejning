@@ -11,10 +11,32 @@ use Inertia\Inertia;
 
 // ── Test helpers (testing env only) ───────────────────────
 if (app()->environment('testing')) {
-    Route::post('/test/db/reset', function () {
-        Artisan::call('migrate:fresh', ['--force' => true]);
-        return response()->json(['ok' => true]);
-    })->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    Route::withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)->group(function () {
+        Route::post('/test/db/reset', function () {
+            Artisan::call('migrate:fresh', ['--force' => true]);
+            return response()->json(['ok' => true]);
+        });
+
+        Route::post('/test/spots/create', function (\Illuminate\Http\Request $request) {
+            $spot = \App\Models\ParkingSpot::factory()->create(array_merge(
+                ['is_active' => true],
+                $request->only(['title', 'address', 'type', 'size', 'lat', 'lng', 'description'])
+            ));
+
+            if ($request->has('availability')) {
+                $a = $request->input('availability');
+                $spot->availabilities()->create([
+                    'starts_at'    => $a['starts_at'],
+                    'ends_at'      => $a['ends_at'],
+                    'booking_type' => $a['booking_type'],
+                    'price'        => $a['price'],
+                    'is_active'    => true,
+                ]);
+            }
+
+            return response()->json(['id' => $spot->id, 'title' => $spot->title]);
+        });
+    });
 }
 
 // ── Public ────────────────────────────────────────────────
@@ -51,7 +73,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/landlord/parking-spots',                                    [LandlordController::class, 'parkingSpots'])->name('dashboard.landlord.parking-spots');
         Route::post('/landlord/parking-spots',                                   [LandlordController::class, 'storeParkingSpot'])->name('dashboard.landlord.parking-spots.store');
         Route::delete('/landlord/parking-spots/images/{image}',                  [LandlordController::class, 'destroyImage'])->name('dashboard.landlord.parking-spots.image.destroy');
-        Route::delete('/landlord/parking-spots/availability/{availability}',     [LandlordController::class, 'destroyAvailability'])->name('dashboard.landlord.parking-spots.availability.destroy');
+        Route::delete('/landlord/parking-spots/availability/{availability}',        [LandlordController::class, 'destroyAvailability'])->name('dashboard.landlord.parking-spots.availability.destroy');
+        Route::patch('/landlord/parking-spots/availability/{availability}/toggle', [LandlordController::class, 'toggleAvailability'])->name('dashboard.landlord.parking-spots.availability.toggle');
         Route::delete('/landlord/parking-spots/{spot}',                          [LandlordController::class, 'destroyParkingSpot'])->name('dashboard.landlord.parking-spots.destroy');
         Route::get('/landlord/parking-spots/{spot}',                             [LandlordController::class, 'show'])->name('dashboard.landlord.parking-spots.show');
         Route::get('/landlord/parking-spots/{spot}/edit',                        [LandlordController::class, 'edit'])->name('dashboard.landlord.parking-spots.edit');

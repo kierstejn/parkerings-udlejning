@@ -40,7 +40,7 @@ export default function Landing() {
                     className="absolute right-[-2%] top-1/2 -translate-y-1/2 text-[oklch(0.27_0.045_255)] select-none pointer-events-none leading-none"
                     style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(240px, 40vw, 560px)', fontWeight: 800, letterSpacing: '-0.06em' }}
                 >
-                    P
+                    L
                 </div>
 
                 <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-36 lg:py-44">
@@ -154,7 +154,7 @@ export default function Landing() {
                             {nearbySpots.map((spot) => {
                                 const primary = spot.images?.[0];
                                 return (
-                                    <article key={spot.id} className="bg-[oklch(0.992_0.004_85)] hover:shadow-md transition-shadow cursor-pointer group">
+                                    <Link key={spot.id} href={`/spots/${spot.id}`} className="block bg-[oklch(0.992_0.004_85)] hover:shadow-md transition-shadow group">
                                         <div className="h-36 bg-[oklch(0.30_0.035_255)] flex items-center justify-center relative overflow-hidden">
                                             {primary ? (
                                                 <img src={primary.url} alt={spot.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
@@ -181,7 +181,7 @@ export default function Landing() {
                                                 <span className="truncate">{spot.address}</span>
                                             </div>
                                         </div>
-                                    </article>
+                                    </Link>
                                 );
                             })}
                         </div>

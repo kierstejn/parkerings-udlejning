@@ -42,7 +42,7 @@ export default function SpotDetail() {
 
                         {/* Image gallery */}
                         {images.length > 0 && (
-                        <div className="relative bg-well border border-line overflow-hidden mb-6" style={{ aspectRatio: '16/9' }}>
+                        <div className="relative bg-well border border-line overflow-hidden mb-6 h-56 md:h-72">
                             <img
                                 src={images[imageIndex].url}
                                 alt={spot.title}

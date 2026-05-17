@@ -1,3 +1,5 @@
+name: parkering-dev
+
 services:
   db:
     image: postgres:latest

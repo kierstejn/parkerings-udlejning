@@ -11,6 +11,7 @@ class ParkingSpotAvailability extends Model
         'parking_spot_id',
         'starts_at',
         'ends_at',
+        'is_active',
         'booking_type',
         'price',
         'min_duration',
@@ -25,6 +26,7 @@ class ParkingSpotAvailability extends Model
             'starts_at' => 'datetime',
             'ends_at'   => 'datetime',
             'price'     => 'decimal:2',
+            'is_active' => 'boolean',
         ];
     }
 
